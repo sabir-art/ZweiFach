@@ -84,23 +84,21 @@ typed by `src/content.config.ts`. Key fields: `title`, `location`, `type`,
 `featured: true` to surface it on the homepage. The body (Markdown/MDX) is the
 narrative.
 
-## Imagery workflow
+## Imagery
 
-All visuals are generated with the Higgsfield MCP and listed in
-`src/data/assets.ts`. By default they’re served from the Higgsfield CDN, so they
-render in any browser immediately. To **localize** them into the repo (optimized,
-no external dependency):
+All visuals are generated with the Higgsfield MCP (model `nano_banana_pro`) and
+**committed under `public/images`**, so the repo is self-contained — it works on
+any machine with no external image dependency. They’re catalogued in
+`src/data/assets.ts`.
 
-```bash
-npm run fetch:assets          # downloads CDN images → /public/images/...
-# then, in .env:
-PUBLIC_USE_LOCAL_ASSETS=true  # serve the local copies
-npm run build
-```
+`assetSrc()` serves the local copies by default; set `PUBLIC_USE_LOCAL_ASSETS=false`
+to use the Higgsfield CDN instead. `Figure.astro` falls back to a branded
+“plan-paper” placeholder if an image is ever missing, so the build stays green.
 
-`Figure.astro` resolves the source via `assetSrc()` and falls back to a branded
-“plan-paper” placeholder when an image is missing — the build is always green
-regardless of network access.
+To add or refresh imagery: add an entry to `src/data/assets.ts` (with its CDN
+`url`), then either run `npm run fetch:assets` locally, or push — the **“Localize
+assets”** GitHub Action (`.github/workflows/localize-assets.yml`) downloads new
+images on a runner (open network) and commits them into `public/images`.
 
 > Note: the firm’s two principals are **not** AI-generated. Portrait slots are
 > honest placeholders for real photos.
@@ -113,10 +111,12 @@ regardless of network access.
 - [ ] Legal text — imprint & privacy (lawyer review)
 - [ ] A contact-form backend (currently opens the visitor’s mail client; see `contact.astro`)
 - [ ] Confirm the financing figures on `/method` with a current source
-- [ ] (Optional) `npm run fetch:assets` + a dedicated OG image
+- [ ] (Optional) a dedicated OG image (currently reuses the home hero)
 
 ## Deployment
 
-Outputs plain static files to `dist/` — deploy to any static host (Netlify,
-Vercel, Cloudflare Pages, GitHub Pages). Set `site` in `astro.config.mjs` to the
-production URL so the sitemap and canonical/OG URLs are correct.
+Outputs plain static files to `dist/` — deploy to any static host. Config is
+included for **Netlify** (`netlify.toml`) and **Vercel** (`vercel.json`); both
+build with `npm run build` and publish `dist/`. Set `site` in `astro.config.mjs`
+to the production URL (e.g. `https://zwei-fach.ch`) so the sitemap and
+canonical/OG URLs are correct.

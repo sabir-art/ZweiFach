@@ -86,15 +86,48 @@ export const assets = {
     width: 2400,
     height: 1792,
   },
+  caseUferpark: {
+    id: '4f9dda20-90a0-47c0-a835-2db06fa5a36b',
+    url: `${CDN}/hf_20260624_094520_4f9dda20-90a0-47c0-a835-2db06fa5a36b.png`,
+    local: 'images/projects/uferpark.jpg',
+    alt: 'Premium contemporary lakeside residential building with deep balconies overlooking a Swiss lake.',
+    width: 2528,
+    height: 1696,
+  },
+  studioWork: {
+    id: '80fb943f-1670-4579-9516-31974610eb8f',
+    url: `${CDN}/hf_20260624_094542_80fb943f-1670-4579-9516-31974610eb8f.png`,
+    local: 'images/studio/workspace.jpg',
+    alt: 'Calm, minimal architecture studio workspace with rolled drawings, samples and a scale model.',
+    width: 2528,
+    height: 1696,
+  },
+  interiorKitchen: {
+    id: '29f008d9-3c79-4ba4-8940-029c586c72dc',
+    url: `${CDN}/hf_20260624_095031_29f008d9-3c79-4ba4-8940-029c586c72dc.png`,
+    local: 'images/interiors/kitchen.jpg',
+    alt: 'Contemporary Swiss apartment open kitchen and dining area in warm oak and pale stone.',
+    width: 2528,
+    height: 1696,
+  },
+  caseWerkhof: {
+    id: 'a53ad5ee-8a1c-4df0-9eb8-72a2cc27a545',
+    url: `${CDN}/hf_20260624_095027_a53ad5ee-8a1c-4df0-9eb8-72a2cc27a545.jpeg`,
+    local: 'images/projects/werkhof.jpg',
+    alt: 'Former industrial brick building converted into contemporary residential lofts with steel-framed windows.',
+    width: 2528,
+    height: 1696,
+  },
 } satisfies Record<string, GeneratedAsset>;
 
 export type AssetKey = keyof typeof assets;
 
 /**
- * Resolve the URL for an asset. Remote CDN by default (works in any browser);
- * set `PUBLIC_USE_LOCAL_ASSETS=true` after running `npm run fetch:assets` to
- * serve the localized copies from /public instead.
+ * Resolve the URL for an asset. Local by default — the imagery is committed
+ * under /public (localized by the "Localize assets" workflow), so the repo is
+ * self-contained. Set `PUBLIC_USE_LOCAL_ASSETS=false` to use the Higgsfield
+ * CDN instead (e.g. before the assets have been localized).
  */
 export function assetSrc(a: GeneratedAsset): string {
-  return import.meta.env.PUBLIC_USE_LOCAL_ASSETS === 'true' ? `/${a.local}` : a.url;
+  return import.meta.env.PUBLIC_USE_LOCAL_ASSETS === 'false' ? a.url : `/${a.local}`;
 }

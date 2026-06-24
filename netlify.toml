@@ -1,0 +1,15 @@
+# Netlify deployment for ZweiFach (static Astro site).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # After running the "Localize assets" workflow (images committed to /public),
+  # set this to "true" to serve images locally instead of from the CDN.
+  # PUBLIC_USE_LOCAL_ASSETS = "true"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
