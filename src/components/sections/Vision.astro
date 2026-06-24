@@ -1,9 +1,9 @@
 ---
 /**
- * Vision — the atmospheric "belief" beat. ZweiFach's answer to the Springs
- * Wellness section: an organic, slowly-drifting gradient field (pure CSS —
- * the markdown's accepted lightweight alternative to WebGL) behind a manifesto
- * that reveals word by word. This is the emotional respiration after the hero.
+ * Vision — the "what we believe" beat, on a light ground. Instead of the dark
+ * organic field, a warm clay halo drifts behind a faint blueprint plan-grid +
+ * pixel texture (architecture, not wellness). The manifesto reveals word by
+ * word; the three beliefs rise after it.
  */
 const beliefs = [
   {
@@ -21,17 +21,15 @@ const beliefs = [
 ];
 ---
 
-<section class="vision relative overflow-hidden bg-ink py-28 text-paper md:py-40">
-  <div class="vision-field" aria-hidden="true">
-    <span class="vision-blob vision-blob--1"></span>
-    <span class="vision-blob vision-blob--2"></span>
-    <span class="vision-blob vision-blob--3"></span>
-  </div>
+<section class="vision relative overflow-hidden bg-paper py-28 text-ink md:py-40">
+  <div class="vision-grid" aria-hidden="true"></div>
+  <div class="vision-dots" aria-hidden="true"></div>
+  <div class="vision-halo" aria-hidden="true"></div>
 
   <div class="shell relative z-10">
     <div class="flex items-center justify-between">
-      <p class="kicker !text-paper/55" data-reveal>What we believe</p>
-      <span class="corner-label text-paper/35" data-reveal>(01)</span>
+      <p class="kicker" data-reveal>What we believe</p>
+      <span class="corner-label text-taupe" data-reveal>(01)</span>
     </div>
 
     <h2
@@ -41,12 +39,12 @@ const beliefs = [
       A beautiful project isn’t enough. It has to be financeable — which means it has to be sold before it’s built.
     </h2>
 
-    <div class="mt-16 grid gap-10 border-t border-paper/15 pt-10 md:grid-cols-3 md:gap-12">
+    <div class="mt-16 grid gap-10 border-t border-ink/15 pt-10 md:grid-cols-3 md:gap-12">
       {
         beliefs.map((b, i) => (
           <div data-reveal style={`--reveal-delay:${i * 110}ms`}>
             <p class="font-sans text-lg font-semibold leading-snug">{b.k}</p>
-            <p class="mt-3 leading-relaxed text-paper/65">{b.t}</p>
+            <p class="mt-3 leading-relaxed text-ink/65">{b.t}</p>
           </div>
         ))
       }
@@ -55,59 +53,59 @@ const beliefs = [
 </section>
 
 <style>
-  .vision-field {
+  /* Blueprint plan grid, faded from the upper-left */
+  .vision-grid {
     position: absolute;
-    inset: -25%;
+    inset: 0;
     z-index: 0;
-    filter: blur(80px);
-    opacity: 0.55;
     pointer-events: none;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-blueprint) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-blueprint) 12%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask: radial-gradient(120% 120% at 12% 0%, #000, transparent 70%);
+    mask: radial-gradient(120% 120% at 12% 0%, #000, transparent 70%);
   }
-  .vision-blob {
+  /* Fine pixel/dot texture, like a plot grid */
+  .vision-dots {
     position: absolute;
-    border-radius: 50%;
-    mix-blend-mode: screen;
-    will-change: transform;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-blueprint) 16%, transparent) 1px,
+      transparent 1.4px
+    );
+    background-size: 13px 13px;
+    -webkit-mask: radial-gradient(80% 80% at 85% 100%, #000, transparent 72%);
+    mask: radial-gradient(80% 80% at 85% 100%, #000, transparent 72%);
+    opacity: 0.7;
   }
-  .vision-blob--1 {
-    width: 60vw;
-    height: 60vw;
-    left: -8%;
-    top: -12%;
-    background: radial-gradient(circle, var(--color-blueprint-soft), transparent 64%);
-    animation: vision-drift-1 26s ease-in-out infinite;
+  /* Warm clay halo, slowly drifting */
+  .vision-halo {
+    position: absolute;
+    z-index: 0;
+    top: -20%;
+    right: -10%;
+    width: 70vw;
+    height: 70vw;
+    max-width: 920px;
+    max-height: 920px;
+    pointer-events: none;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-clay) 42%, transparent),
+      transparent 62%
+    );
+    filter: blur(40px);
+    opacity: 0.5;
+    animation: vision-halo-drift 26s ease-in-out infinite alternate;
   }
-  .vision-blob--2 {
-    width: 52vw;
-    height: 52vw;
-    right: -6%;
-    top: 8%;
-    background: radial-gradient(circle, var(--color-clay), transparent 66%);
-    animation: vision-drift-2 32s ease-in-out infinite;
-  }
-  .vision-blob--3 {
-    width: 46vw;
-    height: 46vw;
-    left: 28%;
-    bottom: -22%;
-    background: radial-gradient(circle, var(--color-blueprint), transparent 68%);
-    animation: vision-drift-3 29s ease-in-out infinite;
-  }
-  @keyframes vision-drift-1 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(10vw, 7vh) scale(1.18); }
-  }
-  @keyframes vision-drift-2 {
-    0%, 100% { transform: translate(0, 0) scale(1.05); }
-    50% { transform: translate(-9vw, 9vh) scale(0.92); }
-  }
-  @keyframes vision-drift-3 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(6vw, -8vh) scale(1.2); }
+  @keyframes vision-halo-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(-8vw, 6vh) scale(1.15); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .vision-blob {
-      animation: none;
-    }
+    .vision-halo { animation: none; }
   }
 </style>

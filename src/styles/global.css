@@ -470,41 +470,57 @@
   overflow: hidden;
   background: var(--color-ink);
   color: var(--color-paper);
-  animation: pl-out 0.9s var(--ease-out-expo) 1.5s forwards;
+  animation: pl-out 0.85s var(--ease-out-expo) 1.95s forwards;
 }
-.preloader__gradient {
+/* Faint blueprint plan grid, fading out from the centre */
+.preloader__grid {
   position: absolute;
-  inset: -25%;
-  filter: blur(10px);
-  background:
-    radial-gradient(circle at 28% 32%, color-mix(in srgb, var(--color-clay) 60%, transparent), transparent 30%),
-    radial-gradient(circle at 76% 64%, color-mix(in srgb, var(--color-blueprint-soft) 62%, transparent), transparent 32%),
-    linear-gradient(130deg, var(--color-ink), var(--color-graphite));
-  animation: pl-drift 4s ease-in-out infinite alternate;
+  inset: 0;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-blueprint-soft) 24%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-blueprint-soft) 24%, transparent) 1px, transparent 1px);
+  background-size: 34px 34px;
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 26%, transparent 70%);
+  mask: radial-gradient(circle at 50% 50%, #000 26%, transparent 70%);
+  animation: pl-grid-in 1.2s var(--ease-out-expo) forwards;
 }
-.preloader__logo {
+.preloader__mark {
   position: relative;
-  display: flex;
-  gap: 0.02em;
-  overflow: hidden;
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: clamp(3rem, 9vw, 9rem);
-  letter-spacing: -0.04em;
-  line-height: 0.92;
-  padding-bottom: 0.12em;
+  width: min(62vw, 380px);
+  height: auto;
+  overflow: visible;
 }
-.preloader__logo span {
-  display: block;
-  transform: translateY(118%);
-  animation: pl-logo-in 0.95s var(--ease-out-expo) forwards;
+/* The two strands plot up from the baseline */
+.pl-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scaleY(0);
+  animation: pl-bar-draw 0.55s var(--ease-out-expo) forwards;
 }
-.preloader__logo span:last-child {
-  animation-delay: 0.12s;
-  color: var(--color-clay-soft);
+.pl-bar--blue { fill: var(--color-blueprint); }
+.pl-bar--clay { fill: var(--color-clay); animation-delay: 0.12s; }
+/* The wordmark draws as an outline, then fills */
+.pl-word {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 64px;
+  letter-spacing: -2px;
+  fill: transparent;
+  stroke: var(--color-paper);
+  stroke-width: 1.1;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation:
+    pl-draw 1s ease 0.3s forwards,
+    pl-word-fill 0.5s ease 1.2s forwards;
 }
-@keyframes pl-logo-in { to { transform: translateY(0); } }
-@keyframes pl-drift { to { transform: scale(1.1) rotate(4deg); } }
+@keyframes pl-grid-in { from { opacity: 0; } to { opacity: 0.5; } }
+@keyframes pl-bar-draw { to { transform: scaleY(1); } }
+@keyframes pl-draw { to { stroke-dashoffset: 0; } }
+@keyframes pl-word-fill {
+  to { fill: var(--color-paper); stroke: transparent; }
+}
 @keyframes pl-out { to { transform: translateY(-100%); } }
 html.pl-skip .preloader { display: none; }
 @media (prefers-reduced-motion: reduce) { .preloader { display: none; } }

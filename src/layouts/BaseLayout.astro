@@ -33,12 +33,14 @@ const { headerVariant = 'solid', ...head } = Astro.props;
     <slot name="head" />
   </head>
   <body>
-    <!-- Preloader (CSS-driven; skipped after first view per session) -->
+    <!-- Preloader: the mark drawn like a plan, then resolved (first visit/session only) -->
     <div class="preloader" data-preloader aria-hidden="true">
-      <div class="preloader__gradient"></div>
-      <div class="preloader__logo">
-        <span>Zwei</span><span>Fach</span>
-      </div>
+      <div class="preloader__grid"></div>
+      <svg class="preloader__mark" viewBox="0 0 470 130" role="img" aria-label="ZweiFach">
+        <rect class="pl-bar pl-bar--blue" x="6" y="36" width="12" height="60" rx="3"></rect>
+        <rect class="pl-bar pl-bar--clay" x="24" y="36" width="12" height="60" rx="3"></rect>
+        <text class="pl-word" x="52" y="92">ZweiFach</text>
+      </svg>
     </div>
 
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">

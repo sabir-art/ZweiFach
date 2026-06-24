@@ -1,0 +1,99 @@
+---
+/**
+ * FoundersHero — the home opener: the two principals, full-bleed and
+ * edge-to-edge (no gutter, no gap between them). The two portraits take a
+ * gentle, OPPOSITE parallax as you scroll (left drifts down, right drifts up),
+ * and the copy fades up over a bottom scrim so it never covers the faces — you
+ * read who the two are at a glance. Names sit under their own photo, colour-
+ * coded by strand (blueprint = architecture, clay = commercialization).
+ */
+import { getFounder } from '@data/founders';
+import { site } from '@data/site';
+import Button from '@components/ui/Button.astro';
+
+const esad = getFounder('esad');
+const dionis = getFounder('dionis');
+const cols = [
+  { f: esad, parallax: '0.09', tone: 'text-blueprint-soft', label: 'Architecture' },
+  { f: dionis, parallax: '-0.07', tone: 'text-clay-soft', label: 'Commercialization' },
+];
+const webp = (p: string) => p.replace(/\.jpe?g$/i, '.webp');
+---
+
+<section
+  class="founders-hero relative h-[100svh] min-h-[620px] w-full overflow-hidden bg-graphite text-paper"
+>
+  <!-- Two portraits, edge to edge -->
+  <div class="grid h-full grid-cols-2">
+    {
+      cols.map((c) => (
+        <div class="relative h-full overflow-hidden">
+          <div class="founders-hero__media absolute inset-0" data-parallax={c.parallax}>
+            <picture>
+              <source srcset={webp(c.f.portrait!)} type="image/webp" />
+              <img
+                src={c.f.portrait}
+                alt={c.f.portraitAlt}
+                loading="eager"
+                decoding="async"
+                class="absolute left-0 top-[-9%] h-[118%] w-full object-cover"
+              />
+            </picture>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <!-- Scrims: bottom for the copy, soft top for the kicker -->
+  <div
+    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-graphite via-graphite/35 to-transparent"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-graphite/70 to-transparent"
+  >
+  </div>
+
+  <!-- Top meta -->
+  <div class="shell absolute inset-x-0 top-0 z-10 flex items-center justify-between pt-28 md:pt-32">
+    <p class="kicker !text-paper/75" data-reveal>Architecture × Commercialization</p>
+    <p class="corner-label hidden text-paper/55 sm:block">{site.location.city} · {site.location.canton}</p>
+  </div>
+
+  <!-- Bottom: who they are + the line + CTAs -->
+  <div class="shell absolute inset-x-0 bottom-0 z-10 pb-10 md:pb-14">
+    <div class="flex items-end justify-between gap-6">
+      <div data-reveal>
+        <p class="font-sans text-base font-semibold md:text-lg">{esad.name}</p>
+        <p class:list={['corner-label', cols[0].tone]}>{cols[0].label}</p>
+      </div>
+      <div class="text-right" data-reveal style="--reveal-delay:90ms">
+        <p class="font-sans text-base font-semibold md:text-lg">{dionis.name}</p>
+        <p class:list={['corner-label', cols[1].tone]}>{cols[1].label}</p>
+      </div>
+    </div>
+
+    <div
+      class="mt-6 flex flex-col gap-6 border-t border-paper/15 pt-6 md:flex-row md:items-end md:justify-between"
+    >
+      <h1
+        class="max-w-[15ch] font-serif text-[clamp(2.1rem,1rem+3.8vw,5rem)] leading-[1.0]"
+        data-split
+        data-split-now
+      >
+        From land to the last apartment sold.
+      </h1>
+      <div
+        class="flex flex-wrap items-center gap-x-6 gap-y-3"
+        data-reveal
+        style="--reveal-delay:220ms"
+      >
+        <span class="inline-block" data-magnetic>
+          <Button href="/contact/" variant="inverse">Talk about your project</Button>
+        </span>
+        <Button href="/method/" variant="line" class="!text-paper">See the method</Button>
+      </div>
+    </div>
+  </div>
+</section>
