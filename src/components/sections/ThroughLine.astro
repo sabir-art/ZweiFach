@@ -1,0 +1,154 @@
+---
+/**
+ * The Through-Line — the cinematic spine of the home page.
+ *
+ * A Springs-style sticky storyteller: on desktop a single full-height image
+ * column stays pinned and cross-fades between the four value-chain stages as
+ * the step copy scrolls past it. On mobile each step carries its own inline
+ * image (no overlap, fully readable). All scroll-syncing is IntersectionObserver
+ * driven (see initThroughline in ui.ts) — robust, no pin maths — and the first
+ * image is server-marked active so the section is never blank without JS.
+ */
+import { valueChain } from '@data/valueChain';
+import { assets, assetSrc } from '@data/assets';
+import Figure from '@components/ui/Figure.astro';
+import Button from '@components/ui/Button.astro';
+
+const media = [assets.caseHoehenweg, assets.archModel, assets.caseUferpark, assets.interiorLiving];
+const stages = valueChain.map((s, i) => ({ ...s, media: media[i] ?? assets.archModel }));
+
+const bulletTone = (strand: string) =>
+  strand === 'pivot' || strand === 'clay'
+    ? 'bg-clay-soft'
+    : strand === 'blueprint'
+      ? 'bg-blueprint-soft'
+      : 'bg-paper/40';
+---
+
+<section class="relative bg-ink text-paper" data-throughline>
+  <!-- Intro -->
+  <div class="shell pt-20 md:pt-28 lg:pt-32">
+    <div class="flex items-center justify-between">
+      <p class="kicker !text-paper/55" data-reveal>The through-line</p>
+      <span class="corner-label text-paper/40" data-reveal>(02)</span>
+    </div>
+    <h2
+      class="mt-8 max-w-3xl font-serif text-[clamp(2.2rem,1rem+4vw,4.6rem)] leading-[1.02]"
+      data-reveal
+    >
+      One continuous chain — from a plot to the last apartment
+      <span class="display-italic text-clay-soft">sold.</span>
+    </h2>
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-paper/60" data-reveal>
+      Four stages, no broken links. Each one is drawn to feed the next — and the
+      bank’s pre-sale quota is the gate the whole development turns on.
+    </p>
+  </div>
+
+  <!-- Sticky storyteller -->
+  <div class="shell mt-12 md:mt-16 lg:mt-20">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-16">
+      <!-- Shared sticky media (desktop) -->
+      <div class="hidden lg:block">
+        <div class="tl-media sticky top-0 h-screen self-start py-[6vh]">
+          <div class="tl-media-inner relative h-full w-full overflow-hidden rounded-2xl">
+            {
+              stages.map((s, i) => (
+                <figure
+                  class:list={['tl-img fig-grid absolute inset-0', i === 0 && 'is-active']}
+                  data-tl-img={i}
+                >
+                  <img
+                    src={assetSrc(s.media)}
+                    alt={s.media.alt}
+                    width={s.media.width}
+                    height={s.media.height}
+                    loading={i < 1 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    class="h-full w-full object-cover"
+                  />
+                </figure>
+              ))
+            }
+            <div
+              class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/5 to-ink/25"
+            >
+            </div>
+            <!-- Stage index + progress rail -->
+            <div class="absolute inset-x-6 bottom-6 flex items-center gap-4">
+              <span class="corner-label text-paper/80" data-tl-index>01</span>
+              <span class="relative h-px flex-1 overflow-hidden bg-paper/20">
+                <span
+                  class="absolute inset-y-0 left-0 w-full origin-left bg-clay-soft transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style="transform:scaleX(0.25)"
+                  data-tl-bar
+                >
+                </span>
+              </span>
+              <span class="corner-label text-paper/40">04</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="relative">
+        {
+          stages.map((s, i) => (
+            <article
+              class="tl-step flex min-h-[62vh] flex-col justify-center border-t border-paper/10 py-12 first:border-t-0 lg:min-h-screen lg:border-t-0 lg:py-0 lg:pl-2"
+              data-tl-step={i}
+            >
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="corner-label text-paper/50">Stage {s.n}</span>
+                {s.isPivot && (
+                  <span class="corner-label rounded-full bg-clay/20 px-2.5 py-1 text-clay-soft">
+                    The pivot
+                  </span>
+                )}
+              </div>
+
+              {/* Inline image (mobile only) */}
+              <Figure
+                asset={s.media}
+                aspect="16 / 10"
+                class="mt-6 rounded-xl lg:hidden"
+                eager={i < 1}
+              />
+
+              <h3 class="mt-6 font-serif text-[clamp(2rem,1rem+3.4vw,3.6rem)] leading-[1.05]">
+                {s.title}
+              </h3>
+              <p class="mt-5 max-w-md font-serif text-xl italic leading-snug text-paper/85">
+                {s.lead}
+              </p>
+              <p class="mt-5 max-w-md leading-relaxed text-paper/60">{s.body}</p>
+
+              <ul class="mt-7 grid max-w-md gap-2.5">
+                {s.points.map((pt) => (
+                  <li class="flex items-start gap-3 text-sm text-paper/70">
+                    <span class:list={['mt-[0.5rem] h-1 w-1 shrink-0 rounded-full', bulletTone(s.strand)]} />
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing CTA -->
+  <div class="shell mt-12 flex flex-wrap items-center justify-between gap-6 border-t border-paper/10 pt-10 md:mt-16">
+    <p class="max-w-md text-lg leading-relaxed text-paper/65" data-reveal>
+      One chain, held end to end — so nothing falls through the gap between
+      design and sale.
+    </p>
+    <div data-reveal data-magnetic class="inline-block">
+      <Button href="/method/" variant="inverse">See the method in full</Button>
+    </div>
+  </div>
+
+  <div class="h-20 md:h-28 lg:h-32"></div>
+</section>

@@ -1,11 +1,19 @@
 /**
  * ZweiFach — interaction layer.
- * Smooth scroll (Lenis) + scroll-driven motion (GSAP/ScrollTrigger) + a custom
- * cursor, magnetic elements and word-reveal headlines.
  *
- * Robust by design: every feature is isolated in try/catch, and the reveal
- * hidden-state is added BY JS (class `reveal-ready`) — so if this module ever
- * fails to load, content stays fully visible. Honours prefers-reduced-motion.
+ * Smooth scroll (Lenis) + scroll-driven motion (GSAP/ScrollTrigger), a custom
+ * blend-mode cursor, magnetic elements, word-reveal headlines and the sticky
+ * "through-line" storyteller — all re-initialised cleanly across Astro View
+ * Transitions.
+ *
+ * Robust by design:
+ *  - Everything is split into `initOnce` (global singletons: Lenis, cursor,
+ *    window listeners — created a single time) and `initPage` (per-document
+ *    work that re-runs after every navigation).
+ *  - Every feature is isolated in try/catch; the reveal hidden-state is added
+ *    BY JS, so if this module ever fails to load the server-rendered content
+ *    stays fully visible.
+ *  - Honours prefers-reduced-motion throughout.
  */
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
@@ -16,31 +24,137 @@ gsap.registerPlugin(ScrollTrigger);
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
 
+let lenis: Lenis | null = null;
+let onceDone = false;
+let pageBooted = false;
+
+/* Re-resolved on every page (the document body is swapped between routes). */
+let headerEl: HTMLElement | null = null;
+let progressEl: HTMLElement | null = null;
+let lastScroll = 0;
+
+function safe(label: string, fn: () => void) {
+  try {
+    fn();
+  } catch (err) {
+    console.warn(`[ui] ${label} failed`, err);
+  }
+}
+
+/* ============================================================
+   Global singletons (created once, survive navigations)
+   ============================================================ */
+
 /* ---------- Smooth scroll ---------- */
 function initSmoothScroll() {
-  if (reduce) return null;
-  const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
+  if (reduce || lenis) return;
+  lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
   lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.add((time) => lenis!.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
-  // Anchor links → lenis
-  document.querySelectorAll('a[href^="#"]').forEach((a) => {
-    a.addEventListener('click', (e) => {
-      const id = a.getAttribute('href');
-      if (!id || id === '#') return;
-      const target = document.querySelector(id);
-      if (target) {
-        e.preventDefault();
-        lenis.scrollTo(target as HTMLElement, { offset: -80 });
-      }
-    });
-  });
-  return lenis;
 }
+
+/* ---------- Custom cursor (event-delegated so it survives swaps) ---------- */
+function initCursor() {
+  if (!finePointer || reduce) return;
+  const dot = document.querySelector<HTMLElement>('[data-cursor-dot]');
+  const ring = document.querySelector<HTMLElement>('[data-cursor-ring]');
+  const textEl = document.querySelector<HTMLElement>('[data-cursor-text]');
+  if (!dot || !ring) return;
+  document.documentElement.classList.add('has-cursor');
+
+  const ringX = gsap.quickTo(ring, 'x', { duration: 0.5, ease: 'power3' });
+  const ringY = gsap.quickTo(ring, 'y', { duration: 0.5, ease: 'power3' });
+  const dotX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power2' });
+  const dotY = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power2' });
+  window.addEventListener('pointermove', (e) => {
+    ringX(e.clientX);
+    ringY(e.clientY);
+    dotX(e.clientX);
+    dotY(e.clientY);
+  });
+
+  const hot = 'a, button, [data-cursor], input, textarea, select, label';
+  document.addEventListener('pointerover', (e) => {
+    const t = e.target as HTMLElement;
+    if (!t?.closest) return;
+    if (t.closest(hot)) document.documentElement.classList.add('cursor-hot');
+    const labelEl = t.closest<HTMLElement>('[data-cursor-label]');
+    if (labelEl) {
+      if (textEl) textEl.textContent = labelEl.dataset.cursorLabel || '';
+      document.documentElement.classList.add('cursor-has-label');
+    }
+  });
+  document.addEventListener('pointerout', (e) => {
+    const t = e.target as HTMLElement;
+    if (!t?.closest) return;
+    if (t.closest(hot)) document.documentElement.classList.remove('cursor-hot');
+    if (t.closest('[data-cursor-label]')) document.documentElement.classList.remove('cursor-has-label');
+  });
+}
+
+/* ---------- Header state + scroll progress ---------- */
+function updateHeader() {
+  const y = window.scrollY;
+  if (headerEl) {
+    headerEl.classList.toggle('is-scrolled', y > 24);
+    headerEl.classList.toggle('is-hidden', y > 320 && y > lastScroll);
+  }
+  if (progressEl) {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progressEl.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
+  }
+  lastScroll = y;
+}
+
+function initHeaderListeners() {
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  window.addEventListener('resize', updateHeader);
+}
+
+function resolveHeader() {
+  headerEl = document.querySelector<HTMLElement>('[data-header]');
+  progressEl = document.querySelector<HTMLElement>('[data-progress]');
+  updateHeader();
+}
+
+/* ---------- Anchor links → Lenis (delegated) ---------- */
+function initAnchors() {
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const a = t?.closest ? (t.closest('a[href^="#"]') as HTMLAnchorElement | null) : null;
+    if (!a) return;
+    const id = a.getAttribute('href');
+    if (!id || id === '#') return;
+    const target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(target as HTMLElement, { offset: -80 });
+    else (target as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+  });
+}
+
+/* ---------- Escape closes the mobile menu (delegated) ---------- */
+function initMenuEscape() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const menu = document.querySelector('[data-menu]');
+    if (!menu?.classList.contains('is-open')) return;
+    const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    menu.classList.remove('is-open');
+    toggle?.classList.remove('is-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+    document.documentElement.style.overflow = '';
+  });
+}
+
+/* ============================================================
+   Per-page work (re-runs after every View Transition)
+   ============================================================ */
 
 /* ---------- Reveals (CSS-transition driven, JS-gated) ---------- */
 function initReveals() {
-  const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+  const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-in)'));
   if (!els.length) return;
   els.forEach((el) => el.classList.add('reveal-ready'));
   if (reduce || !('IntersectionObserver' in window)) {
@@ -86,6 +200,8 @@ function splitWords(el: HTMLElement) {
 function initSplit() {
   if (reduce) return;
   document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+    if (el.dataset.splitDone) return;
+    el.dataset.splitDone = '1';
     const words = splitWords(el);
     const onLoad = el.hasAttribute('data-split-now');
     gsap.set(words, { yPercent: 120 });
@@ -104,6 +220,8 @@ function initSplit() {
 function initParallax() {
   if (reduce) return;
   gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+    if (el.dataset.parallaxDone) return;
+    el.dataset.parallaxDone = '1';
     const speed = parseFloat(el.dataset.parallax || '0.15');
     gsap.fromTo(
       el,
@@ -122,64 +240,40 @@ function initParallax() {
   });
 }
 
-/* ---------- Horizontal pinned sections ---------- */
-function initHorizontal() {
-  if (reduce || window.innerWidth < 1024) return;
-  gsap.utils.toArray<HTMLElement>('[data-hscroll]').forEach((track) => {
-    const wrap = track.closest<HTMLElement>('[data-hscroll-wrap]') || track;
-    const distance = () => track.scrollWidth - window.innerWidth;
-    gsap.to(track, {
-      x: () => -distance(),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: wrap,
-        start: 'top top',
-        end: () => '+=' + distance(),
-        pin: true,
-        scrub: 1,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
+/* ---------- Through-line: sticky media cross-fades as steps scroll ---------- */
+function initThroughline() {
+  document.querySelectorAll<HTMLElement>('[data-throughline]').forEach((root) => {
+    const imgs = Array.from(root.querySelectorAll<HTMLElement>('[data-tl-img]'));
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-tl-step]'));
+    const bar = root.querySelector<HTMLElement>('[data-tl-bar]');
+    const indexLabel = root.querySelector<HTMLElement>('[data-tl-index]');
+    if (!imgs.length || !steps.length) return;
+
+    const setActive = (idx: number) => {
+      imgs.forEach((im, i) => im.classList.toggle('is-active', i === idx));
+      steps.forEach((st, i) => st.classList.toggle('is-current', i === idx));
+      if (indexLabel) indexLabel.textContent = '0' + (idx + 1);
+      if (bar) bar.style.transform = `scaleX(${(idx + 1) / steps.length})`;
+    };
+    setActive(0);
+
+    if (reduce || !('IntersectionObserver' in window)) return;
+    if (root.dataset.tlBound) return;
+    root.dataset.tlBound = '1';
+    root.classList.add('tl-ready');
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number((entry.target as HTMLElement).dataset.tlStep);
+            if (!Number.isNaN(idx)) setActive(idx);
+          }
+        });
       },
-    });
-  });
-}
-
-/* ---------- Custom cursor ---------- */
-function initCursor() {
-  if (!finePointer || reduce) return;
-  const dot = document.querySelector<HTMLElement>('[data-cursor-dot]');
-  const ring = document.querySelector<HTMLElement>('[data-cursor-ring]');
-  if (!dot || !ring) return;
-  document.documentElement.classList.add('has-cursor');
-
-  const ringX = gsap.quickTo(ring, 'x', { duration: 0.5, ease: 'power3' });
-  const ringY = gsap.quickTo(ring, 'y', { duration: 0.5, ease: 'power3' });
-  const dotX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power2' });
-  const dotY = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power2' });
-
-  window.addEventListener('pointermove', (e) => {
-    ringX(e.clientX);
-    ringY(e.clientY);
-    dotX(e.clientX);
-    dotY(e.clientY);
-  });
-
-  const hot = 'a, button, [data-cursor], input, textarea, select, label';
-  document.querySelectorAll(hot).forEach((el) => {
-    el.addEventListener('pointerenter', () => document.documentElement.classList.add('cursor-hot'));
-    el.addEventListener('pointerleave', () => document.documentElement.classList.remove('cursor-hot'));
-  });
-
-  // Contextual labels ("View", "Drag", …)
-  const textEl = document.querySelector<HTMLElement>('[data-cursor-text]');
-  document.querySelectorAll<HTMLElement>('[data-cursor-label]').forEach((el) => {
-    el.addEventListener('pointerenter', () => {
-      if (textEl) textEl.textContent = el.dataset.cursorLabel || '';
-      document.documentElement.classList.add('cursor-has-label');
-    });
-    el.addEventListener('pointerleave', () =>
-      document.documentElement.classList.remove('cursor-has-label'),
+      { threshold: 0, rootMargin: '-45% 0px -45% 0px' },
     );
+    steps.forEach((s) => io.observe(s));
   });
 }
 
@@ -187,11 +281,13 @@ function initCursor() {
 function initMagnetic() {
   if (!finePointer || reduce) return;
   gsap.utils.toArray<HTMLElement>('[data-magnetic]').forEach((el) => {
+    if (el.dataset.magneticDone) return;
+    el.dataset.magneticDone = '1';
     const strength = parseFloat(el.dataset.magnetic || '0.35');
     el.addEventListener('pointermove', (e) => {
       const r = el.getBoundingClientRect();
-      const mx = e.clientX - (r.left + r.width / 2);
-      const my = e.clientY - (r.top + r.height / 2);
+      const mx = (e as PointerEvent).clientX - (r.left + r.width / 2);
+      const my = (e as PointerEvent).clientY - (r.top + r.height / 2);
       gsap.to(el, { x: mx * strength, y: my * strength, duration: 0.4, ease: 'power3.out' });
     });
     el.addEventListener('pointerleave', () => {
@@ -200,34 +296,12 @@ function initMagnetic() {
   });
 }
 
-/* ---------- Header state + scroll progress ---------- */
-function initHeader() {
-  const header = document.querySelector<HTMLElement>('[data-header]');
-  const progress = document.querySelector<HTMLElement>('[data-progress]');
-  let last = 0;
-  const update = () => {
-    const y = window.scrollY;
-    if (header) {
-      header.classList.toggle('is-scrolled', y > 24);
-      // hide on scroll down, reveal on scroll up
-      header.classList.toggle('is-hidden', y > 320 && y > last);
-    }
-    if (progress) {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      progress.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
-    }
-    last = y;
-  };
-  update();
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
-}
-
 /* ---------- Mobile menu ---------- */
 function initMenu() {
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.querySelector<HTMLElement>('[data-menu]');
-  if (!toggle || !menu) return;
+  if (!toggle || !menu || toggle.dataset.menuBound) return;
+  toggle.dataset.menuBound = '1';
   const setOpen = (open: boolean) => {
     menu.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
@@ -236,14 +310,13 @@ function initMenu() {
   };
   toggle.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
-  });
 }
 
 /* ---------- Drag-to-scroll rails ---------- */
 function initDragScroll() {
   document.querySelectorAll<HTMLElement>('[data-drag]').forEach((el) => {
+    if (el.dataset.dragBound) return;
+    el.dataset.dragBound = '1';
     let down = false;
     let startX = 0;
     let startLeft = 0;
@@ -269,7 +342,6 @@ function initDragScroll() {
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
     el.addEventListener('pointerleave', end);
-    // Prevent click navigation right after a drag
     el.addEventListener(
       'click',
       (e) => {
@@ -283,33 +355,61 @@ function initDragScroll() {
   });
 }
 
-function safe(label: string, fn: () => void) {
-  try {
-    fn();
-  } catch (err) {
-    console.warn(`[ui] ${label} failed`, err);
-  }
+/* ============================================================
+   Lifecycle
+   ============================================================ */
+function initOnce() {
+  if (onceDone) return;
+  onceDone = true;
+  safe('smoothScroll', initSmoothScroll);
+  safe('cursor', initCursor);
+  safe('headerListeners', initHeaderListeners);
+  safe('anchors', initAnchors);
+  safe('menuEscape', initMenuEscape);
 }
 
-function init() {
+function initPage() {
   safe('reveals', initReveals);
-  safe('header', initHeader);
-  safe('menu', initMenu);
-  safe('smoothScroll', () => initSmoothScroll());
   safe('split', initSplit);
   safe('parallax', initParallax);
-  safe('horizontal', initHorizontal);
-  safe('cursor', initCursor);
+  safe('throughline', initThroughline);
   safe('magnetic', initMagnetic);
+  safe('menu', initMenu);
   safe('dragScroll', initDragScroll);
+  safe('resolveHeader', resolveHeader);
   safe('refresh', () => ScrollTrigger.refresh());
+  if (lenis) safe('lenis-resize', () => lenis!.resize());
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
+function boot() {
+  if (pageBooted) return;
+  pageBooted = true;
+  initOnce();
+  initPage();
 }
 
-// Recalculate triggers once fonts/images settle.
+/* Initial load + every View Transition navigation. */
+document.addEventListener('astro:page-load', boot);
+
+/* Tear down route-bound triggers and pre-hide the next page's reveals so they
+   don't flash in before JS catches them. */
+document.addEventListener('astro:before-swap', (e: Event) => {
+  pageBooted = false;
+  safe('kill-st', () => ScrollTrigger.getAll().forEach((t) => t.kill()));
+  document.documentElement.style.overflow = '';
+  const doc = (e as unknown as { newDocument?: Document }).newDocument;
+  if (doc && document.documentElement.classList.contains('js')) {
+    safe('prehide', () => {
+      doc.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+        if (!el.classList.contains('media-reveal')) el.classList.add('reveal-ready');
+      });
+    });
+  }
+});
+
+/* Fallback for first paint (and when View Transitions are unavailable). */
+if (document.readyState !== 'loading') boot();
+else document.addEventListener('DOMContentLoaded', boot);
+
+/* Recalculate triggers once fonts/images settle. */
 window.addEventListener('load', () => safe('refresh-load', () => ScrollTrigger.refresh()));

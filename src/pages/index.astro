@@ -4,7 +4,7 @@ import Hero from '@components/sections/Hero.astro';
 import Marquee from '@components/sections/Marquee.astro';
 import Section from '@components/ui/Section.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
-import ValueChain from '@components/sections/ValueChain.astro';
+import ThroughLine from '@components/sections/ThroughLine.astro';
 import Expertise from '@components/sections/Expertise.astro';
 import StatBand from '@components/sections/StatBand.astro';
 import ProjectsRail from '@components/sections/ProjectsRail.astro';
@@ -53,35 +53,8 @@ import { assets } from '@data/assets';
     </div>
   </Section>
 
-  <!-- (02) The method -->
-  <section class="bg-paper py-20 md:py-28 lg:py-32">
-    <div class="shell">
-      <div class="flex items-center justify-between">
-        <p class="kicker" data-reveal>The method</p>
-        <span class="corner-label text-taupe" data-reveal>(02)</span>
-      </div>
-      <div class="mt-10 grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div class="lg:col-span-4">
-          <div class="lg:sticky lg:top-28">
-            <h2 class="font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
-              One continuous chain.
-            </h2>
-            <p class="mt-5 max-w-sm leading-relaxed text-ink/65" data-reveal>
-              From a plot to a sold-out building, with no broken link between
-              design and sale. The bank’s pre-sale quota is the gate everything
-              turns on.
-            </p>
-            <div class="mt-8" data-reveal>
-              <Button href="/method/" variant="line">See the method in full</Button>
-            </div>
-          </div>
-        </div>
-        <div class="lg:col-span-7 lg:col-start-6">
-          <ValueChain />
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- (02) The through-line — cinematic value chain -->
+  <ThroughLine />
 
   <!-- (03) Selected work -->
   <section class="bg-graphite py-20 text-paper md:py-28 lg:py-32">
