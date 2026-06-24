@@ -1,46 +1,58 @@
 ---
 /**
- * FoundersHero — the home opener: the two principals, full-bleed and
- * edge-to-edge (no gutter, no gap). Each portrait AND its caption take their
- * own parallax (at different rates, so text drifts against its photo), and the
- * captions sit on the outer edges + a bottom scrim so they never cover the
- * faces. object-position is anchored high so heads are never cropped.
+ * FoundersHero — two principals full-bleed and edge-to-edge, each with a solid
+ * white text card overlaid at the bottom, staggered (left flush to the bottom,
+ * right raised). Photos and cards each take their own parallax at different
+ * rates, so the cards drift against the portraits. Heads are anchored high so
+ * the framing never crops them.
  */
 import { getFounder } from '@data/founders';
 import { site } from '@data/site';
-import Button from '@components/ui/Button.astro';
 
 const esad = getFounder('esad');
 const dionis = getFounder('dionis');
 const webp = (p: string) => p.replace(/\.jpe?g$/i, '.webp');
 
 const cols = [
+  { f: esad, photo: '0.05', tone: 'text-blueprint' },
+  { f: dionis, photo: '-0.04', tone: 'text-clay' },
+];
+
+const cards = [
   {
     f: esad,
-    photo: '0.07',
-    text: '0.03',
-    tone: 'text-blueprint-soft',
-    align: 'text-left',
-    bottom: '24%',
+    href: '/architecture/',
+    tone: 'text-blueprint',
+    bar: 'bg-blueprint',
+    heading: 'A design a bank can fund.',
+    body: 'Feasibility, plans and permit-ready design — value engineered from the first line.',
     label: 'Architecture',
-    lead: 'Feasibility, plans and design — a project a bank can fund.',
+    pos: 'left-0 bottom-0',
+    parallax: '0.08',
+    cursor: 'Architecture',
   },
   {
     f: dionis,
-    photo: '-0.06',
-    text: '-0.025',
-    tone: 'text-clay-soft',
-    align: 'text-right',
-    bottom: '14%',
+    href: '/commercialization/',
+    tone: 'text-clay',
+    bar: 'bg-clay',
+    heading: 'Sold before it’s built.',
+    body: 'Pricing, dossier and off-plan pre-sale that clears the bank’s quota — through to the last lot.',
     label: 'Commercialization',
-    lead: 'Pricing, dossier and off-plan pre-sale — sold to the last lot.',
+    pos: 'right-0 bottom-[26%]',
+    parallax: '-0.07',
+    cursor: 'Commercialization',
   },
 ];
 ---
 
 <section
-  class="founders-hero relative h-[100svh] min-h-[620px] w-full overflow-hidden bg-graphite text-paper"
+  class="founders-hero relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-graphite text-paper"
 >
+  <h1 class="sr-only">
+    ZweiFach — from land to the last apartment sold. Architecture and commercialization under one roof.
+  </h1>
+
   <!-- Two portraits, edge to edge -->
   <div class="grid h-full grid-cols-2">
     {
@@ -59,65 +71,53 @@ const cols = [
               />
             </picture>
           </div>
-
-          {/* Per-founder caption — parallaxes against its own photo */}
-          <div class="absolute inset-x-0 z-10" style={`bottom:${c.bottom}`} data-parallax={c.text}>
-            <div class:list={['px-[var(--gutter)]', c.align]} data-reveal>
-              <p class="font-sans text-lg font-semibold md:text-xl">{c.f.name}</p>
-              <p class:list={['corner-label mt-1', c.tone]}>{c.label}</p>
-              <p
-                class:list={[
-                  'mt-3 max-w-xs text-sm leading-relaxed text-paper/75',
-                  c.align === 'text-right' && 'ml-auto',
-                ]}
-              >
-                {c.lead}
-              </p>
-            </div>
-          </div>
         </div>
       ))
     }
   </div>
 
-  <!-- Scrims -->
+  <!-- Soft top scrim for the header -->
   <div
-    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-graphite via-graphite/35 to-transparent"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-graphite/65 to-transparent"
+    class="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-graphite/65 to-transparent"
   >
   </div>
 
   <!-- Top meta -->
   <div class="shell absolute inset-x-0 top-0 z-20 flex items-center justify-between pt-28 md:pt-32">
-    <p class="kicker !text-paper/75" data-reveal>Architecture × Commercialization</p>
-    <p class="corner-label hidden text-paper/55 sm:block">{site.location.city} · {site.location.canton}</p>
+    <p class="kicker !text-paper/80" data-reveal>Architecture × Commercialization</p>
+    <p class="corner-label hidden text-paper/65 sm:block">{site.location.city} · {site.location.canton}</p>
   </div>
 
-  <!-- Bottom band: the line + CTAs -->
-  <div class="shell absolute inset-x-0 bottom-0 z-20 pb-9 md:pb-12">
-    <div
-      class="flex flex-col gap-5 border-t border-paper/15 pt-6 md:flex-row md:items-end md:justify-between"
-    >
-      <h1
-        class="max-w-[15ch] font-serif text-[clamp(1.9rem,1rem+3vw,4rem)] leading-[1.02]"
-        data-split
-        data-split-now
-      >
-        From land to the last apartment sold.
-      </h1>
-      <div
-        class="flex flex-wrap items-center gap-x-6 gap-y-3"
-        data-reveal
-        style="--reveal-delay:200ms"
-      >
-        <span class="inline-block" data-magnetic>
-          <Button href="/contact/" variant="inverse">Talk about your project</Button>
-        </span>
-        <Button href="/method/" variant="line" class="!text-paper">See the method</Button>
+  <!-- Two white text cards, staggered, each parallaxing against its photo -->
+  {
+    cards.map((c) => (
+      <div class:list={['absolute z-10 w-[min(86vw,30rem)]', c.pos]} data-parallax={c.parallax}>
+        <a
+          href={c.href}
+          class="founders-card group block bg-paper p-7 text-ink md:p-9"
+          data-reveal
+          data-cursor
+          data-cursor-label={c.cursor}
+        >
+          <div class="flex items-center gap-3">
+            <span class:list={['h-1.5 w-1.5 rounded-full', c.bar]} />
+            <span class:list={['corner-label', c.tone]}>{c.label}</span>
+          </div>
+          <p class="mt-4 font-sans text-[clamp(1.5rem,1rem+1.8vw,2.4rem)] font-bold leading-[1.04] tracking-[-0.02em]">
+            {c.heading}
+          </p>
+          <p class="mt-3 max-w-sm text-sm leading-relaxed text-ink/65">{c.body}</p>
+          <div class="mt-5 flex items-center justify-between">
+            <span class="font-sans text-sm font-semibold">{c.f.name}</span>
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-ink/20 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              →
+            </span>
+          </div>
+        </a>
       </div>
-    </div>
-  </div>
+    ))
+  }
 </section>
