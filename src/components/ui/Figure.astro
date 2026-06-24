@@ -38,6 +38,11 @@ const altText = alt ?? asset?.alt ?? '';
 const w = width ?? asset?.width;
 const h = height ?? asset?.height;
 const ratio = aspect ?? (w && h ? `${w} / ${h}` : '16 / 9');
+// Serve WebP for locally-hosted JPGs (the optimizer writes a .webp sibling).
+const webp =
+  url && url.startsWith('/') && /\.jpe?g$/i.test(url)
+    ? url.replace(/\.jpe?g$/i, '.webp')
+    : undefined;
 ---
 
 <figure
@@ -46,16 +51,19 @@ const ratio = aspect ?? (w && h ? `${w} / ${h}` : '16 / 9');
 >
   {
     url && (
-      <img
-        src={url}
-        alt={altText}
-        width={w}
-        height={h}
-        loading={eager ? 'eager' : 'lazy'}
-        decoding="async"
-        sizes={sizes}
-        class:list={['h-full w-full object-cover', imgClass]}
-      />
+      <picture>
+        {webp && <source srcset={webp} type="image/webp" />}
+        <img
+          src={url}
+          alt={altText}
+          width={w}
+          height={h}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          sizes={sizes}
+          class:list={['h-full w-full object-cover', imgClass]}
+        />
+      </picture>
     )
   }
   <slot />
