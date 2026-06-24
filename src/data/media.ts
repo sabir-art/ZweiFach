@@ -29,6 +29,6 @@ export const media = {
   locationVideo: `${CDN}/hf_20260624_141010_acc7e113-6620-40a3-b696-df51e4fb8d2c.mp4`,
   locationPoster: stills.exteriorGolden,
   /** Closing dark band video (dusk → night). */
-  nightVideo: '',
+  nightVideo: `${CDN}/hf_20260624_141510_019505c8-094a-413c-92ee-fb0c78e16005.mp4`,
   nightPoster: stills.exteriorDusk,
 };

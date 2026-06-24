@@ -463,35 +463,45 @@
   z-index: 300;
   display: grid;
   place-items: center;
-  background: var(--color-graphite);
-  color: var(--color-paper);
-  animation: pl-out 0.8s var(--ease-out-expo) 1.15s forwards;
-}
-.preloader__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.1rem;
-}
-.preloader__bar {
-  width: 128px;
-  height: 2px;
   overflow: hidden;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--color-paper) 18%, transparent);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  animation: pl-out 0.9s var(--ease-out-expo) 1.5s forwards;
 }
-.preloader__bar::after {
-  content: "";
+.preloader__gradient {
+  position: absolute;
+  inset: -25%;
+  filter: blur(10px);
+  background:
+    radial-gradient(circle at 28% 32%, color-mix(in srgb, var(--color-clay) 60%, transparent), transparent 30%),
+    radial-gradient(circle at 76% 64%, color-mix(in srgb, var(--color-blueprint-soft) 62%, transparent), transparent 32%),
+    linear-gradient(130deg, var(--color-ink), var(--color-graphite));
+  animation: pl-drift 4s ease-in-out infinite alternate;
+}
+.preloader__logo {
+  position: relative;
+  display: flex;
+  gap: 0.02em;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(3rem, 9vw, 9rem);
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  padding-bottom: 0.12em;
+}
+.preloader__logo span {
   display: block;
-  height: 100%;
-  width: 100%;
-  transform: scaleX(0);
-  transform-origin: left;
-  background: linear-gradient(to right, var(--color-blueprint), var(--color-clay));
-  animation: pl-fill 1.05s var(--ease-out-expo) forwards;
+  transform: translateY(118%);
+  animation: pl-logo-in 0.95s var(--ease-out-expo) forwards;
 }
-@keyframes pl-fill { to { transform: scaleX(1); } }
-@keyframes pl-out { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+.preloader__logo span:last-child {
+  animation-delay: 0.12s;
+  color: var(--color-clay-soft);
+}
+@keyframes pl-logo-in { to { transform: translateY(0); } }
+@keyframes pl-drift { to { transform: scale(1.1) rotate(4deg); } }
+@keyframes pl-out { to { transform: translateY(-100%); } }
 html.pl-skip .preloader { display: none; }
 @media (prefers-reduced-motion: reduce) { .preloader { display: none; } }
 

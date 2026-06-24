@@ -35,13 +35,9 @@ const { headerVariant = 'solid', ...head } = Astro.props;
   <body>
     <!-- Preloader (CSS-driven; skipped after first view per session) -->
     <div class="preloader" data-preloader aria-hidden="true">
-      <div class="preloader__inner">
-        <span class="flex items-end gap-[3px]">
-          <span class="block h-6 w-[3px] rounded-sm bg-blueprint"></span>
-          <span class="block h-6 w-[3px] rounded-sm bg-clay"></span>
-        </span>
-        <span class="font-sans text-lg font-bold tracking-tight">ZweiFach</span>
-        <span class="preloader__bar"></span>
+      <div class="preloader__gradient"></div>
+      <div class="preloader__logo">
+        <span>Zwei</span><span>Fach</span>
       </div>
     </div>
 
