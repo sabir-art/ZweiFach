@@ -42,7 +42,11 @@ const beliefs = [
     <div class="mt-16 grid gap-10 border-t border-ink/15 pt-10 md:grid-cols-3 md:gap-12">
       {
         beliefs.map((b, i) => (
-          <div data-reveal style={`--reveal-delay:${i * 110}ms`}>
+          <div
+            data-reveal
+            data-reveal-dir={i === 0 ? 'left' : i === 2 ? 'right' : undefined}
+            style={`--reveal-delay:${i * 110}ms`}
+          >
             <p class="font-sans text-lg font-semibold leading-snug">{b.k}</p>
             <p class="mt-3 leading-relaxed text-ink/65">{b.t}</p>
           </div>

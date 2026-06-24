@@ -1,0 +1,47 @@
+---
+/**
+ * DualImageSplit — two images that drift in opposite directions (top up,
+ * bottom down) as the section scrolls through, splitting apart to let the
+ * centred statement sit between them. Pure parallax (now that the engine is
+ * fixed) — robust, no pin.
+ */
+import { heroShots, stills } from '@data/media';
+
+const top = stills.exteriorGolden;
+const bottom = heroShots[1]; // living room
+---
+
+<section class="relative overflow-hidden bg-ink py-[8vh] text-paper md:py-[12vh]">
+  <div
+    class="relative mx-auto flex min-h-[118vh] max-w-5xl flex-col items-center justify-center px-[var(--gutter)]"
+  >
+    <div class="dual-frame w-full overflow-hidden rounded-2xl" data-parallax="-0.2">
+      <img
+        src={top}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        class="aspect-[16/9] w-full object-cover"
+      />
+    </div>
+
+    <div class="relative z-10 -my-10 max-w-2xl text-center md:-my-16" data-reveal data-reveal-dir="none">
+      <p class="kicker kicker--bare !text-paper/60" style="justify-content:center">The home</p>
+      <h2 class="mt-5 font-serif text-[clamp(2rem,1rem+3.4vw,4.4rem)] leading-[1.04]">
+        Designed to be financed. Built to be lived in.
+      </h2>
+    </div>
+
+    <div class="dual-frame w-full overflow-hidden rounded-2xl" data-parallax="0.2">
+      <img
+        src={bottom}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        class="aspect-[16/9] w-full object-cover"
+      />
+    </div>
+  </div>
+</section>

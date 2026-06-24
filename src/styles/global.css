@@ -576,6 +576,22 @@ html.pl-skip .preloader { display: none; }
 }
 
 /* ============================================================
+   Scene cover — a full-bleed band sticks while the next (opaque)
+   section scrolls up and covers it (Springs vertical "push")
+   ============================================================ */
+.scene-pin {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+@media (max-width: 768px) {
+  .scene-pin { position: relative; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-pin { position: relative; }
+}
+
+/* ============================================================
    View Transitions — keep the cross-fade calm
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {

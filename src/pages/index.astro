@@ -6,6 +6,7 @@ import Section from '@components/ui/Section.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
 import Vision from '@components/sections/Vision.astro';
 import CapabilitySwitcher from '@components/sections/CapabilitySwitcher.astro';
+import DualImageSplit from '@components/sections/DualImageSplit.astro';
 import ZoomBand from '@components/sections/ZoomBand.astro';
 import ThroughLine from '@components/sections/ThroughLine.astro';
 import DesignStack from '@components/sections/DesignStack.astro';
@@ -48,6 +49,9 @@ import { assets } from '@data/assets';
       <CapabilitySwitcher />
     </div>
   </Section>
+
+  <!-- Split images — the home -->
+  <DualImageSplit />
 
   <!-- Zoom band — the gate -->
   <ZoomBand
