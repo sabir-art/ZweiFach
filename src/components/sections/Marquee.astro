@@ -1,0 +1,41 @@
+---
+interface Props {
+  items?: string[];
+  tone?: 'paper' | 'graphite' | 'clay';
+  duration?: number;
+}
+const {
+  items = [
+    'From land to the last apartment sold',
+    'Architecture × Commercialization',
+    'One unbroken chain',
+  ],
+  tone = 'graphite',
+  duration = 38,
+} = Astro.props;
+
+const toneClass: Record<string, string> = {
+  paper: 'bg-paper text-ink border-ink/10',
+  graphite: 'bg-graphite text-paper border-paper/15',
+  clay: 'bg-clay text-paper border-paper/20',
+};
+// Duplicate the set so the -50% loop is seamless.
+const seq = [...items, ...items];
+---
+
+<div
+  class:list={['marquee border-y py-5 md:py-7', toneClass[tone]]}
+  style={`--marquee-dur:${duration}s`}
+  aria-hidden="true"
+>
+  <div class="marquee__track">
+    {
+      seq.map((t) => (
+        <span class="flex items-center gap-6 pr-6 font-sans text-[1.6rem] font-semibold tracking-tight md:text-4xl">
+          {t}
+          <span class="text-clay-soft text-xl md:text-2xl">✦</span>
+        </span>
+      ))
+    }
+  </div>
+</div>

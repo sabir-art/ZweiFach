@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/sections/Hero.astro';
+import Marquee from '@components/sections/Marquee.astro';
 import Section from '@components/ui/Section.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
 import ValueChain from '@components/sections/ValueChain.astro';
 import FounderCard from '@components/sections/FounderCard.astro';
 import StatBand from '@components/sections/StatBand.astro';
-import ProjectCard from '@components/ui/ProjectCard.astro';
+import ProjectsRail from '@components/sections/ProjectsRail.astro';
 import PartnersStrip from '@components/sections/PartnersStrip.astro';
 import ContactCta from '@components/sections/ContactCta.astro';
 import Button from '@components/ui/Button.astro';
@@ -14,66 +15,124 @@ import Figure from '@components/ui/Figure.astro';
 
 import { founders } from '@data/founders';
 import { assets } from '@data/assets';
-import { getFeaturedProjects } from '@lib/projects';
 
-const featured = await getFeaturedProjects(3);
 const expertiseHref = { architecture: '/architecture/', commercialization: '/commercialization/' };
 ---
 
 <BaseLayout headerVariant="over-hero">
   <Hero />
 
-  <!-- The tension -->
+  <Marquee />
+
+  <!-- (01) The tension -->
   <Section tone="paper-2">
-    <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-      <div>
-        <p class="kicker" data-reveal>The tension</p>
-        <h2 class="mt-5 font-serif text-[clamp(2.2rem,1rem+4vw,4rem)] leading-[1.04]" data-reveal>
+    <div class="flex items-center justify-between">
+      <p class="kicker" data-reveal>The tension</p>
+      <span class="corner-label text-taupe" data-reveal>(01)</span>
+    </div>
+    <div class="mt-10 grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <h2 class="font-serif text-[clamp(2.2rem,1rem+5vw,5rem)] leading-[1.02]" data-reveal>
           A beautiful project isn’t enough. It has to be
-          <span class="italic text-clay">financeable.</span>
+          <span class="display-italic text-clay">financeable.</span>
         </h2>
-        <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink/70" data-reveal>
-          Banks release construction credit only once a quota of apartments is
-          pre-sold — often before ground is broken. Plans alone don’t unlock
-          financing; proven demand does.
-        </p>
-        <p class="mt-4 max-w-xl leading-relaxed text-ink/60" data-reveal>
-          That is the link that breaks on most developments: a strong design with
-          no one to pre-sell it, or a sales effort with nothing buildable behind
-          it. ZweiFach holds both ends of the chain.
-        </p>
+        <div class="mt-9 grid max-w-2xl gap-5 text-lg leading-relaxed text-ink/70">
+          <p data-reveal style="--reveal-delay:80ms">
+            Banks release construction credit only once a quota of apartments is
+            pre-sold — often before ground is broken. Plans alone don’t unlock
+            financing; proven demand does.
+          </p>
+          <p data-reveal style="--reveal-delay:160ms">
+            That’s the link that breaks on most developments: a strong design with
+            no one to pre-sell it, or a sales push with nothing buildable behind
+            it. ZweiFach holds both ends of the chain.
+          </p>
+        </div>
       </div>
-      <Figure
-        asset={assets.archModel}
-        aspect="4 / 3"
-        class="rounded-2xl"
-        data-reveal
-      />
+      <div class="lg:col-span-5">
+        <Figure asset={assets.archModel} aspect="4 / 5" class="media-reveal rounded-2xl" data-reveal data-parallax="0.08" />
+        <p class="corner-label mt-4 text-taupe" data-reveal>Feasibility · plans · model</p>
+      </div>
     </div>
   </Section>
 
-  <!-- The value chain -->
-  <Section tone="paper" id="method">
-    <SectionHeading
-      kicker="The method"
-      title="One continuous chain, four stages."
-      intro="From a plot to a sold-out building — with no broken link between design and sale. The bank’s pre-sale quota is the gate everything turns on."
-    />
-    <div class="mt-14 md:mt-20">
-      <ValueChain />
+  <!-- (02) The method -->
+  <section class="bg-paper py-20 md:py-28 lg:py-32">
+    <div class="shell">
+      <div class="flex items-center justify-between">
+        <p class="kicker" data-reveal>The method</p>
+        <span class="corner-label text-taupe" data-reveal>(02)</span>
+      </div>
+      <div class="mt-10 grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-4">
+          <div class="lg:sticky lg:top-28">
+            <h2 class="font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
+              One continuous chain.
+            </h2>
+            <p class="mt-5 max-w-sm leading-relaxed text-ink/65" data-reveal>
+              From a plot to a sold-out building, with no broken link between
+              design and sale. The bank’s pre-sale quota is the gate everything
+              turns on.
+            </p>
+            <div class="mt-8" data-reveal>
+              <Button href="/method/" variant="line">See the method in full</Button>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-7 lg:col-start-6">
+          <ValueChain />
+        </div>
+      </div>
     </div>
-    <div data-reveal>
-      <Button href="/method/" variant="line">See the method in full</Button>
-    </div>
-  </Section>
+  </section>
 
-  <!-- The duo -->
+  <!-- (03) Selected work -->
+  <section class="bg-graphite py-20 text-paper md:py-28 lg:py-32">
+    <div class="shell">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-4">
+            <p class="kicker !text-paper/55" data-reveal>Selected work</p>
+            <span class="corner-label text-paper/40" data-reveal>(03)</span>
+          </div>
+          <h2 class="mt-5 font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
+            Proof, not promises.
+          </h2>
+        </div>
+        <div class="hidden items-center gap-4 md:flex" data-reveal>
+          <span class="corner-label text-paper/40">Drag</span>
+          <Button href="/projects/" variant="inverse">All projects</Button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <ProjectsRail />
+    </div>
+
+    <div class="shell mt-8 flex items-center justify-between">
+      <p class="corner-label text-paper/40" data-reveal>
+        Placeholder case studies — to be replaced.
+      </p>
+      <div class="md:hidden" data-reveal>
+        <Button href="/projects/" variant="inverse">All projects</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- (04) The duo -->
   <Section tone="paper-2">
-    <SectionHeading
-      kicker="The duo"
-      title="Two specialists, one chain."
-      intro="ZweiFach is deliberately two people — an architect and a commercialization lead — so design and sales are never handed off across a gap."
-    />
+    <div class="flex items-center justify-between">
+      <p class="kicker" data-reveal>The duo</p>
+      <span class="corner-label text-taupe" data-reveal>(04)</span>
+    </div>
+    <h2 class="mt-8 max-w-3xl font-serif text-[clamp(2.2rem,1rem+4vw,4.5rem)] leading-[1.02]" data-reveal>
+      Two specialists, one chain.
+    </h2>
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink/65" data-reveal>
+      ZweiFach is deliberately two people — an architect and a commercialization
+      lead — so design and sales are never handed off across a gap.
+    </p>
     <div class="mt-14 grid gap-12 md:grid-cols-2 md:gap-16">
       {
         founders.map((f) => (
@@ -91,40 +150,16 @@ const expertiseHref = { architecture: '/architecture/', commercialization: '/com
   </Section>
 
   <!-- By the numbers -->
-  <Section tone="graphite">
-    <SectionHeading
-      kicker="By the numbers"
-      title="Small by design. Precise by necessity."
-      class="[&_h2]:text-paper [&_.kicker]:!text-paper/55 [&_p]:text-paper/65"
-    />
-    <div class="mt-14">
-      <StatBand tone="graphite" />
-    </div>
-  </Section>
-
-  <!-- Projects -->
-  <Section tone="paper">
-    <div class="flex flex-wrap items-end justify-between gap-6">
-      <SectionHeading
-        kicker="Selected work"
-        title="Proof, not promises."
-        intro="Case studies showing the exact role each of us played across the chain."
-        class="!max-w-2xl"
-      />
-      <div data-reveal class="hidden md:block">
-        <Button href="/projects/" variant="line">All projects</Button>
+  <section class="bg-graphite py-20 text-paper md:py-28">
+    <div class="shell">
+      <h2 class="max-w-3xl font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
+        Small by design. Precise by necessity.
+      </h2>
+      <div class="mt-14">
+        <StatBand tone="graphite" />
       </div>
     </div>
-    <div class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-      {featured.map((p, i) => <ProjectCard project={p} eager={i === 0} />)}
-    </div>
-    <div class="mt-10 md:hidden" data-reveal>
-      <Button href="/projects/" variant="line">All projects</Button>
-    </div>
-    <p class="mt-10 font-mono text-[0.7rem] uppercase tracking-wider text-taupe" data-reveal>
-      Placeholder case studies — to be replaced with real projects.
-    </p>
-  </Section>
+  </section>
 
   <!-- Ecosystem -->
   <Section tone="paper-2">

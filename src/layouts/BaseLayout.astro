@@ -45,6 +45,13 @@ const { headerVariant = 'solid', ...head } = Astro.props;
       </div>
     </div>
 
+    <!-- Custom cursor (fine pointers only) -->
+    <div class="cursor cursor-ring" data-cursor-ring aria-hidden="true"></div>
+    <div class="cursor cursor-dot" data-cursor-dot aria-hidden="true"></div>
+
+    <!-- Film grain -->
+    <div class="grain" aria-hidden="true"></div>
+
     <Header variant={headerVariant} />
 
     <main id="main">

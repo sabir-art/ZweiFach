@@ -1,0 +1,56 @@
+---
+import Figure from '@components/ui/Figure.astro';
+import { getProjects, resolveAsset, statusLabel, expertiseLabel } from '@lib/projects';
+
+const projects = await getProjects();
+---
+
+<div
+  class="no-bar flex cursor-grab snap-x snap-mandatory select-none gap-5 overflow-x-auto px-[var(--gutter)] pb-4"
+  data-cursor
+  data-drag
+  style="scroll-padding-left: var(--gutter);"
+>
+  {
+    projects.map((p, i) => {
+      const asset = resolveAsset(p.data.heroAsset);
+      return (
+        <a
+          href={`/projects/${p.id}/`}
+          class="group relative w-[80vw] shrink-0 snap-start sm:w-[58vw] lg:w-[40vw] xl:w-[33rem]"
+        >
+          <Figure
+            asset={asset}
+            aspect="4 / 5"
+            eager={i < 2}
+            class="rounded-2xl"
+            imgClass="transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+          >
+            <div class="absolute inset-0 bg-gradient-to-t from-graphite/80 via-graphite/5 to-transparent" />
+            <span class="corner-label absolute left-5 top-5 rounded-full bg-paper/90 px-3 py-1 text-ink">
+              {statusLabel[p.data.status]}
+            </span>
+            <span class="corner-label absolute right-5 top-5 text-paper/80">
+              0{i + 1}
+            </span>
+            {!asset && (
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="font-serif text-3xl text-ink/30">{p.data.title}</span>
+              </div>
+            )}
+            <div class="absolute inset-x-5 bottom-5 text-paper">
+              <p class="corner-label text-paper/70">
+                {p.data.location} · {expertiseLabel[p.data.expertise]}
+              </p>
+              <h3 class="mt-1.5 font-serif text-3xl leading-tight md:text-4xl">{p.data.title}</h3>
+              <span class="mt-3 inline-flex items-center gap-1.5 text-sm opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                View case study
+                <span aria-hidden="true">→</span>
+              </span>
+            </div>
+          </Figure>
+        </a>
+      );
+    })
+  }
+</div>

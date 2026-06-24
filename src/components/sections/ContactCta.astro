@@ -17,13 +17,16 @@ const intents = [
 ];
 ---
 
-<section class="bg-graphite text-paper">
-  <div class="shell py-20 md:py-28">
+<section class="relative overflow-hidden bg-graphite text-paper">
+  <div class="shell py-24 md:py-36">
     <div class="h-[2px] w-16 bg-gradient-to-r from-blueprint to-clay" data-reveal aria-hidden="true"></div>
-    <h2 class="mt-7 max-w-3xl font-serif text-4xl leading-[1.05] md:text-6xl" data-reveal>
+    <h2
+      class="mt-8 max-w-5xl display text-[clamp(2.6rem,1rem+6.4vw,7rem)]"
+      data-split
+    >
       {heading}
     </h2>
-    <p class="mt-5 max-w-xl text-lg text-paper/70" data-reveal>{text}</p>
+    <p class="mt-8 max-w-xl text-lg text-paper/70" data-reveal>{text}</p>
 
     <div class="mt-9 flex flex-wrap gap-3" data-reveal>
       {
@@ -38,8 +41,10 @@ const intents = [
       }
     </div>
 
-    <div class="mt-10" data-reveal>
-      <Button href="/contact/" variant="inverse">Talk about your project</Button>
+    <div class="mt-11" data-reveal>
+      <span class="inline-block" data-magnetic>
+        <Button href="/contact/" variant="inverse">Talk about your project</Button>
+      </span>
     </div>
   </div>
 </section>

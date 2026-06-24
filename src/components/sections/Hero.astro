@@ -5,49 +5,97 @@ import Button from '@components/ui/Button.astro';
 import Figure from '@components/ui/Figure.astro';
 ---
 
-<section class="relative min-h-[100svh] w-full overflow-hidden bg-graphite text-paper">
-  <Figure
-    asset={assets.homeHero}
-    eager
-    aspect="auto"
-    class="absolute inset-0 !aspect-auto h-full w-full"
-    imgClass="h-full w-full object-cover"
-  />
-  <!-- legibility scrims -->
-  <div class="absolute inset-0 bg-gradient-to-t from-graphite/90 via-graphite/35 to-graphite/20"></div>
-  <div class="absolute inset-0 bg-gradient-to-r from-graphite/75 via-graphite/10 to-transparent"></div>
+<section class="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-graphite text-paper">
+  <!-- Cinematic media: parallax wrapper › ken-burns wrapper › image -->
+  <div class="absolute inset-0" data-parallax="0.1">
+    <div class="hero-media absolute inset-0">
+      <Figure
+        asset={assets.homeHero}
+        eager
+        aspect="auto"
+        class="!aspect-auto absolute -top-[10%] left-0 h-[120%] w-full"
+        imgClass="h-full w-full object-cover"
+      />
+    </div>
+  </div>
+  <div class="absolute inset-0 bg-gradient-to-t from-graphite via-graphite/35 to-graphite/25"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-graphite/70 via-transparent to-graphite/30"></div>
 
-  <div class="shell relative flex min-h-[100svh] flex-col justify-end pb-16 pt-32 md:pb-24">
-    <div class="max-w-3xl" data-reveal>
-      <p class="kicker !text-paper/70">
-        {site.location.city} · {site.location.canton} — Architecture × Commercialization
-      </p>
-      <h1 class="mt-5 font-sans text-[clamp(2.6rem,1rem+7vw,6rem)] font-bold leading-[0.96] tracking-[-0.03em]">
-        From land to the last<br class="hidden sm:block" /> apartment{' '}
-        <span class="font-serif font-normal italic text-clay-soft">sold.</span>
-      </h1>
-      <p class="mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
+  <!-- Corner metadata -->
+  <div class="shell absolute inset-x-0 top-0 z-10 flex items-center justify-between pt-28 md:pt-32">
+    <p class="corner-label text-paper/55">{site.location.city} · {site.location.canton}</p>
+    <p class="corner-label hidden text-paper/55 sm:block">Est. 2025 — CH</p>
+  </div>
+
+  <!-- Main -->
+  <div class="shell relative z-10 flex h-full flex-col justify-end pb-12 md:pb-16">
+    <p class="kicker !text-paper/70">Architecture × Commercialization</p>
+    <h1
+      class="hero-title mt-6 max-w-[15ch] font-sans text-[clamp(2.9rem,1rem+8.5vw,8.5rem)] font-bold leading-[0.9] tracking-[-0.04em]"
+      data-split
+      data-split-now
+    >
+      From land to the last apartment sold.
+    </h1>
+
+    <div class="mt-9 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <p
+        class="max-w-md font-serif text-xl leading-snug text-paper/85"
+        data-reveal
+        style="--reveal-delay:350ms"
+      >
         {site.shortPitch}
       </p>
-      <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-        <Button href="/contact/" variant="inverse">Talk about your project</Button>
+      <div
+        class="flex flex-wrap items-center gap-x-6 gap-y-4"
+        data-reveal
+        style="--reveal-delay:450ms"
+      >
+        <span class="inline-block" data-magnetic>
+          <Button href="/contact/" variant="inverse">Talk about your project</Button>
+        </span>
         <Button href="/method/" variant="line" class="!text-paper">See the method</Button>
       </div>
     </div>
+  </div>
 
-    <!-- the chain, previewed -->
-    <div
-      class="mt-14 hidden flex-wrap items-center gap-3 font-mono text-[0.7rem] uppercase tracking-wider text-paper/55 md:flex"
-      data-reveal
-      style="--reveal-delay:220ms"
-    >
-      <span>01 · Land</span>
-      <span class="h-px w-8 bg-paper/30"></span>
-      <span>02 · Feasibility</span>
-      <span class="h-px w-8 bg-paper/30"></span>
-      <span class="text-clay-soft">03 · Bank quota</span>
-      <span class="h-px w-8 bg-paper/30"></span>
-      <span>04 · Sold out</span>
-    </div>
+  <!-- Scroll cue -->
+  <div class="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 md:flex md:flex-col md:items-center md:gap-2" aria-hidden="true">
+    <span class="corner-label text-paper/45">Scroll</span>
+    <span class="scroll-line"></span>
   </div>
 </section>
+
+<style>
+  .hero-media {
+    animation: kenburns 22s var(--ease-out-expo) forwards;
+    transform-origin: 60% 45%;
+  }
+  @keyframes kenburns {
+    from { transform: scale(1); }
+    to { transform: scale(1.12); }
+  }
+  .scroll-line {
+    width: 1px;
+    height: 38px;
+    background: linear-gradient(to bottom, rgba(245, 242, 236, 0.5), transparent);
+    animation: scrolldrop 2.2s var(--ease-out-expo) infinite;
+  }
+  @keyframes scrolldrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    40% { transform: scaleY(1); transform-origin: top; }
+    60% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  /* Accent the final word of the headline */
+  .hero-title :global(.word-mask:last-of-type .word) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-clay-soft);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-media { animation: none; }
+    .scroll-line { animation: none; }
+  }
+</style>

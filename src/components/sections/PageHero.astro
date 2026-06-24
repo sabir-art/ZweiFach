@@ -8,34 +8,53 @@ interface Props {
   intro?: string;
   asset?: GeneratedAsset;
   imageAspect?: string;
+  /** Optional corner index label, e.g. "(A)". */
+  index?: string;
 }
-const { kicker, title, intro, asset, imageAspect = '21 / 9' } = Astro.props;
+const { kicker, title, intro, asset, imageAspect = '16 / 9', index } = Astro.props;
 ---
 
-<section class="bg-paper pt-32 md:pt-40">
-  <div class="shell pb-14 md:pb-16">
-    <div class="max-w-4xl">
+<section class="relative bg-paper pt-32 md:pt-44">
+  <div class="shell">
+    <div class="flex items-start justify-between gap-6">
       {kicker && <p class="kicker" data-reveal>{kicker}</p>}
-      <h1
-        class="mt-5 font-sans text-[clamp(2.4rem,1rem+5vw,5rem)] font-bold leading-[0.98] tracking-[-0.03em]"
-        data-reveal
-      >
-        {title}
-      </h1>
-      {
-        intro && (
-          <p class="mt-7 max-w-2xl text-xl leading-relaxed text-ink/70" data-reveal>
-            {intro}
-          </p>
-        )
-      }
-      <div class="mt-8"><slot name="actions" /></div>
+      {index && <span class="corner-label text-taupe" data-reveal>{index}</span>}
     </div>
+
+    <h1
+      class="mt-7 max-w-[16ch] font-sans text-[clamp(2.6rem,1rem+6.5vw,7rem)] font-bold leading-[0.92] tracking-[-0.04em]"
+      data-split
+      data-split-now
+    >
+      {title}
+    </h1>
+
+    {
+      intro && (
+        <p
+          class="mt-8 max-w-2xl text-xl leading-relaxed text-ink/70"
+          data-reveal
+          style="--reveal-delay:250ms"
+        >
+          {intro}
+        </p>
+      )
+    }
+
+    <div class="mt-8"><slot name="actions" /></div>
   </div>
+
   {
     asset && (
-      <div class="shell pb-4">
-        <Figure asset={asset} aspect={imageAspect} class="rounded-2xl" eager data-reveal />
+      <div class="shell mt-14 md:mt-20">
+        <Figure
+          asset={asset}
+          aspect={imageAspect}
+          class="media-reveal rounded-2xl"
+          data-reveal
+          data-parallax="0.05"
+          eager
+        />
       </div>
     )
   }

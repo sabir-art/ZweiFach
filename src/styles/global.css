@@ -220,13 +220,13 @@
 .prose-zf blockquote p { margin: 0; }
 
 /* The through-line spine — a vertical line that draws on scroll */
-.js [data-reveal].is-line {
+[data-reveal].is-line.reveal-ready {
   opacity: 1;
   transform: scaleY(0);
   transform-origin: top;
   transition: transform 1.5s var(--ease-out-expo);
 }
-.js [data-reveal].is-line.is-in {
+[data-reveal].is-line.reveal-ready.is-in {
   transform: scaleY(1);
 }
 
@@ -234,11 +234,20 @@
    Header & mobile menu state
    ============================================================ */
 [data-header].is-scrolled {
-  background-color: color-mix(in srgb, var(--color-paper) 86%, transparent);
-  backdrop-filter: blur(12px) saturate(1.1);
-  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  background-color: color-mix(in srgb, var(--color-paper) 80%, transparent);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
   border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
   color: var(--color-ink);
+}
+[data-header] {
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    background-color 0.5s ease,
+    color 0.5s ease;
+}
+[data-header].is-hidden {
+  transform: translateY(-100%);
 }
 
 [data-menu].is-open {
@@ -246,30 +255,22 @@
 }
 
 /* ============================================================
-   Scroll reveal — progressive enhancement
-   Elements get .js [data-reveal]; JS adds .is-in when intersecting.
+   Scroll reveal — JS adds `.reveal-ready` (so content is visible
+   if JS never runs), then `.is-in` when intersecting.
    ============================================================ */
-.js [data-reveal] {
+[data-reveal].reveal-ready {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(28px);
   transition:
-    opacity 0.9s var(--ease-out-expo),
-    transform 0.9s var(--ease-out-expo);
+    opacity 1s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
-.js [data-reveal].is-in {
+[data-reveal].reveal-ready.is-in {
   opacity: 1;
   transform: none;
 }
-
-/* The through-line SVG draws itself */
-.draw-path {
-  stroke-dasharray: var(--len, 1);
-  stroke-dashoffset: var(--len, 1);
-  transition: stroke-dashoffset 1.4s var(--ease-out-expo);
-}
-.draw-path.is-in { stroke-dashoffset: 0; }
 
 /* ============================================================
    Reduced motion — honour the user's preference
@@ -282,6 +283,147 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .js [data-reveal] { opacity: 1; transform: none; }
-  .draw-path { stroke-dashoffset: 0; }
+  [data-reveal].reveal-ready { opacity: 1; transform: none; }
 }
+
+/* ============================================================
+   Interaction layer — "Awwwards" feel
+   ============================================================ */
+
+/* Custom cursor (fine pointers only; JS adds .has-cursor) */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: difference;
+  transition: opacity 0.3s ease;
+}
+.has-cursor .cursor { opacity: 1; }
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 9999px;
+  background: #fff;
+}
+.cursor-ring {
+  width: 40px;
+  height: 40px;
+  margin: -20px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 9999px;
+  transition: width 0.35s var(--ease-out-expo), height 0.35s var(--ease-out-expo),
+    background-color 0.35s ease, border-color 0.35s ease;
+}
+.has-cursor.cursor-hot .cursor-ring {
+  width: 66px;
+  height: 66px;
+  margin: -33px;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.has-cursor.cursor-hot .cursor-dot { opacity: 0; }
+@media (pointer: fine) {
+  .has-cursor,
+  .has-cursor a,
+  .has-cursor button,
+  .has-cursor [data-cursor],
+  .has-cursor input,
+  .has-cursor textarea,
+  .has-cursor select,
+  .has-cursor label { cursor: none; }
+}
+
+/* Film grain — filmic texture over everything */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain { display: none; }
+}
+
+/* Word-reveal headlines */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Marquee */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+.marquee__track {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  animation: marquee var(--marquee-dur, 36s) linear infinite;
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+}
+
+/* Kinetic display type */
+.display {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+}
+.display-italic {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+/* Big editorial image with mask reveal */
+.media-reveal {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.2s var(--ease-out-expo);
+}
+.media-reveal.is-in { clip-path: inset(0 0 0% 0); }
+
+/* Hairline */
+.hr-line { height: 1px; background: color-mix(in srgb, var(--color-ink) 12%, transparent); }
+
+/* Index/corner labels */
+.corner-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Hidden scrollbar (for swipe rails) */
+.no-bar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-bar::-webkit-scrollbar { display: none; }
+
+/* Media-reveal figures animate only the clip mask (not fade/translate) */
+[data-reveal].media-reveal.reveal-ready { opacity: 1; transform: none; }
+
+/* Drag-to-scroll rail state */
+[data-drag] { cursor: grab; }
+[data-drag].is-dragging { cursor: grabbing; scroll-snap-type: none; }
+[data-drag].is-dragging a { pointer-events: none; }
