@@ -1,0 +1,40 @@
+---
+/**
+ * ZoomBand — a full-bleed image that begins zoomed in and eases back to 1:1
+ * as it scrolls through the viewport (Springs "parallax zoom-out", driven by
+ * initZoom in ui.ts), with an editorial statement revealed over it.
+ */
+import Figure from '@components/ui/Figure.astro';
+import type { GeneratedAsset } from '@data/assets';
+
+interface Props {
+  asset: GeneratedAsset;
+  kicker?: string;
+  title: string;
+}
+const { asset, kicker, title } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-graphite text-paper">
+  <div class="relative flex min-h-[80vh] items-end overflow-hidden" data-zoom="1.3">
+    <Figure
+      asset={asset}
+      eager
+      aspect="auto"
+      class="!aspect-auto absolute inset-0 h-full w-full"
+      imgClass="h-full w-full object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-graphite via-graphite/35 to-graphite/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-ink/40 via-transparent to-transparent"></div>
+
+    <div class="shell relative z-10 w-full pb-16 md:pb-24">
+      {kicker && <p class="kicker !text-paper/70" data-reveal>{kicker}</p>}
+      <h2
+        class="mt-6 max-w-4xl font-serif text-[clamp(2rem,1rem+4vw,5rem)] leading-[1.05]"
+        data-split
+      >
+        {title}
+      </h2>
+    </div>
+  </div>
+</section>

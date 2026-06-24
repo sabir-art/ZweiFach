@@ -277,6 +277,63 @@ function initThroughline() {
   });
 }
 
+/* ---------- Scroll zoom-out (image starts zoomed, settles to 1) ---------- */
+function initZoom() {
+  if (reduce) return;
+  gsap.utils.toArray<HTMLElement>('[data-zoom]').forEach((el) => {
+    if (el.dataset.zoomDone) return;
+    el.dataset.zoomDone = '1';
+    const target = el.querySelector<HTMLElement>('img') || el;
+    const from = parseFloat(el.dataset.zoom || '1.25');
+    gsap.fromTo(
+      target,
+      { scale: from },
+      {
+        scale: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 92%',
+          end: 'center 52%',
+          scrub: true,
+        },
+      },
+    );
+  });
+}
+
+/* ---------- Content switcher (tabs → clip image swap + text fade) ---------- */
+function initSwitcher() {
+  document.querySelectorAll<HTMLElement>('[data-switcher]').forEach((root) => {
+    if (root.dataset.switcherDone) return;
+    root.dataset.switcherDone = '1';
+    const tabs = Array.from(root.querySelectorAll<HTMLElement>('[data-switch-tab]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-switch-panel]'));
+    const medias = Array.from(root.querySelectorAll<HTMLElement>('[data-switch-media]'));
+    const bar = root.querySelector<HTMLElement>('[data-switch-bar]');
+    if (tabs.length < 2) return;
+
+    let current = -1;
+    const activate = (idx: number) => {
+      if (idx === current) return;
+      current = idx;
+      tabs.forEach((t, i) => {
+        t.classList.toggle('is-active', i === idx);
+        t.setAttribute('aria-selected', String(i === idx));
+      });
+      panels.forEach((p, i) => p.classList.toggle('is-active', i === idx));
+      medias.forEach((m, i) => m.classList.toggle('is-active', i === idx));
+      if (bar) bar.style.transform = `scaleX(${(idx + 1) / tabs.length})`;
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => activate(i));
+      t.addEventListener('focus', () => activate(i));
+    });
+    activate(0);
+  });
+}
+
 /* ---------- Magnetic elements ---------- */
 function initMagnetic() {
   if (!finePointer || reduce) return;
@@ -373,6 +430,8 @@ function initPage() {
   safe('split', initSplit);
   safe('parallax', initParallax);
   safe('throughline', initThroughline);
+  safe('zoom', initZoom);
+  safe('switcher', initSwitcher);
   safe('magnetic', initMagnetic);
   safe('menu', initMenu);
   safe('dragScroll', initDragScroll);
