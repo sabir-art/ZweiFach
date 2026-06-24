@@ -102,6 +102,22 @@ export const assets = {
     width: 2528,
     height: 1696,
   },
+  interiorKitchen: {
+    id: '29f008d9-3c79-4ba4-8940-029c586c72dc',
+    url: `${CDN}/hf_20260624_095031_29f008d9-3c79-4ba4-8940-029c586c72dc.png`,
+    local: 'images/interiors/kitchen.jpg',
+    alt: 'Contemporary Swiss apartment open kitchen and dining area in warm oak and pale stone.',
+    width: 2528,
+    height: 1696,
+  },
+  caseWerkhof: {
+    id: 'a53ad5ee-8a1c-4df0-9eb8-72a2cc27a545',
+    url: `${CDN}/hf_20260624_095027_a53ad5ee-8a1c-4df0-9eb8-72a2cc27a545.jpeg`,
+    local: 'images/projects/werkhof.jpg',
+    alt: 'Former industrial brick building converted into contemporary residential lofts with steel-framed windows.',
+    width: 2528,
+    height: 1696,
+  },
 } satisfies Record<string, GeneratedAsset>;
 
 export type AssetKey = keyof typeof assets;
