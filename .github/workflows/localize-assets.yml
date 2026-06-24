@@ -7,6 +7,13 @@ name: Localize assets
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - claude/quirky-mayer-ebztuw
+    paths:
+      - 'src/data/assets.ts'
+      - 'scripts/fetch-assets.mjs'
+      - '.github/workflows/localize-assets.yml'
 
 permissions:
   contents: write
