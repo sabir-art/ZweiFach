@@ -27,13 +27,8 @@ export const site = {
     linkedin: 'https://www.linkedin.com/',
     instagram: 'https://www.instagram.com/',
   },
-  /**
-   * Default Open Graph image. Points at the generated hero on the Higgsfield
-   * CDN so social previews work immediately; `npm run fetch:assets` localizes
-   * it to /og/zweifach-og.jpg.
-   */
-  ogImage:
-    'https://d8j0ntlcm91z4.cloudfront.net/user_3DJJ2XKeRPXrIgbSbXkIuloC5RW/hf_20260624_084032_2125d8c7-913d-43f5-86cc-6a7a451f9f5c.jpeg',
+  /** Default Open Graph image (the generated hero, committed under /public). */
+  ogImage: '/images/hero/home-hero.jpg',
 } as const;
 
 export type Site = typeof site;

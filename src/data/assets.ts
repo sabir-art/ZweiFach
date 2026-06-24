@@ -123,10 +123,11 @@ export const assets = {
 export type AssetKey = keyof typeof assets;
 
 /**
- * Resolve the URL for an asset. Remote CDN by default (works in any browser);
- * set `PUBLIC_USE_LOCAL_ASSETS=true` after running `npm run fetch:assets` to
- * serve the localized copies from /public instead.
+ * Resolve the URL for an asset. Local by default — the imagery is committed
+ * under /public (localized by the "Localize assets" workflow), so the repo is
+ * self-contained. Set `PUBLIC_USE_LOCAL_ASSETS=false` to use the Higgsfield
+ * CDN instead (e.g. before the assets have been localized).
  */
 export function assetSrc(a: GeneratedAsset): string {
-  return import.meta.env.PUBLIC_USE_LOCAL_ASSETS === 'true' ? `/${a.local}` : a.url;
+  return import.meta.env.PUBLIC_USE_LOCAL_ASSETS === 'false' ? a.url : `/${a.local}`;
 }
