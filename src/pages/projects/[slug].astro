@@ -8,6 +8,7 @@ import LotTable from '@components/ui/LotTable.astro';
 import Figure from '@components/ui/Figure.astro';
 import ContactCta from '@components/sections/ContactCta.astro';
 import { resolveAsset, statusLabel, expertiseLabel } from '@lib/projects';
+import { assetSrc } from '@data/assets';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -29,7 +30,7 @@ const gallery = data.gallery.map((k) => resolveAsset(k)).filter(Boolean);
   title={data.title}
   description={data.seoDescription ?? data.summary}
   type="article"
-  image={hero?.url}
+  image={hero ? assetSrc(hero) : undefined}
 >
   <article>
     <!-- Project hero -->
