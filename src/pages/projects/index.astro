@@ -5,6 +5,7 @@ import Section from '@components/ui/Section.astro';
 import ProjectCard from '@components/ui/ProjectCard.astro';
 import ContactCta from '@components/sections/ContactCta.astro';
 import { getProjects } from '@lib/projects';
+import { assets } from '@data/assets';
 
 const projects = await getProjects();
 
@@ -17,6 +18,7 @@ const filters = [
 ---
 
 <BaseLayout
+  headerVariant="over-hero"
   title="Projects"
   description="Selected ZweiFach case studies — showing the exact role of each principal across the value chain, from feasibility and design to off-plan pre-sale and sell-through."
 >
@@ -24,6 +26,7 @@ const filters = [
     kicker="Projects"
     title="Proof, not promises."
     intro="Each case study shows the chain in action — who did what, from feasibility and plans to the pre-sale that cleared the bank’s quota."
+    asset={assets.caseAarefeld}
   />
 
   <Section tone="paper">

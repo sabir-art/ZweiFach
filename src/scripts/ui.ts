@@ -401,7 +401,7 @@ document.addEventListener('astro:before-swap', (e: Event) => {
   if (doc && document.documentElement.classList.contains('js')) {
     safe('prehide', () => {
       doc.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
-        if (!el.classList.contains('media-reveal')) el.classList.add('reveal-ready');
+        el.classList.add('reveal-ready');
       });
     });
   }

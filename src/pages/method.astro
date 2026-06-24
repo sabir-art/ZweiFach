@@ -7,9 +7,11 @@ import ValueChain from '@components/sections/ValueChain.astro';
 import PartnersStrip from '@components/sections/PartnersStrip.astro';
 import ContactCta from '@components/sections/ContactCta.astro';
 import { quotaSourceNote } from '@data/valueChain';
+import { assets } from '@data/assets';
 ---
 
 <BaseLayout
+  headerVariant="over-hero"
   title="Method"
   description="The ZweiFach method: one continuous value chain from land and feasibility, through the bank's pre-sale quota, to a fully commercialized, sold-out building."
 >
@@ -17,6 +19,7 @@ import { quotaSourceNote } from '@data/valueChain';
     kicker="The method"
     title="How an idea becomes a sold-out building."
     intro="A residential development lives or dies on one thing: whether it can be financed. Our method follows the single chain that gets there — and closes the link most teams leave open."
+    asset={assets.archModel}
   />
 
   <Section tone="paper">

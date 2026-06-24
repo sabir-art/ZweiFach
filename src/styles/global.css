@@ -398,12 +398,12 @@
   letter-spacing: -0.02em;
 }
 
-/* Big editorial image with mask reveal */
-.media-reveal {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 1.2s var(--ease-out-expo);
-}
-.media-reveal.is-in { clip-path: inset(0 0 0% 0); }
+/* Big editorial image with clip-path mask reveal (bottom → top wipe).
+   JS-gated via `reveal-ready` so the image is fully visible if the script
+   never runs; the clip only applies once JS has taken over. */
+.media-reveal { transition: clip-path 1.2s var(--ease-out-expo); }
+[data-reveal].media-reveal.reveal-ready { clip-path: inset(0 0 100% 0); }
+[data-reveal].media-reveal.reveal-ready.is-in { clip-path: inset(0 0 0% 0); }
 
 /* Hairline */
 .hr-line { height: 1px; background: color-mix(in srgb, var(--color-ink) 12%, transparent); }

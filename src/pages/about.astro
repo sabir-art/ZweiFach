@@ -22,6 +22,7 @@ const firmFacts = [
 ---
 
 <BaseLayout
+  headerVariant="over-hero"
   title="About"
   description="ZweiFach is a deliberately small Swiss firm: an ETH architect and a commercialization lead working as one continuous team — design and sales with no broken link between them."
 >
@@ -29,6 +30,7 @@ const firmFacts = [
     kicker="About"
     title="Two people. One unbroken chain."
     intro="ZweiFach is deliberately small. An architect and a commercialization lead, working as one team — so the people who design the project are the people who get it financed and sold."
+    asset={assets.studioWork}
   />
 
   <Section tone="paper">
@@ -38,7 +40,13 @@ const firmFacts = [
   </Section>
 
   <Section tone="paper" spacing="tight">
-    <Figure asset={assets.studioWork} aspect="21 / 9" class="rounded-2xl" data-reveal />
+    <Figure
+      asset={assets.caseUferpark}
+      aspect="21 / 9"
+      class="media-reveal rounded-2xl"
+      data-reveal
+      data-parallax="0.06"
+    />
   </Section>
 
   <!-- Why two -->

@@ -1,4 +1,13 @@
 ---
+/**
+ * PageHero — inner-page opener.
+ *
+ * When an `asset` is supplied it renders a cinematic, image-backed hero
+ * (full-bleed render, scroll parallax, clip-path mask reveal, ink + blueprint
+ * wash, word-split title) to match the home. Pages without an image (contact,
+ * legal, 404) fall back to the calm light editorial header. Cinematic pages
+ * should set `headerVariant="over-hero"` on their BaseLayout.
+ */
 import Figure from '@components/ui/Figure.astro';
 import type { GeneratedAsset } from '@data/assets';
 
@@ -12,50 +21,120 @@ interface Props {
   index?: string;
 }
 const { kicker, title, intro, asset, imageAspect = '16 / 9', index } = Astro.props;
+const cinematic = !!asset;
 ---
 
-<section class="relative bg-paper pt-32 md:pt-44">
-  <div class="shell">
-    <div class="flex items-start justify-between gap-6">
-      {kicker && <p class="kicker" data-reveal>{kicker}</p>}
-      {index && <span class="corner-label text-taupe" data-reveal>{index}</span>}
-    </div>
-
-    <h1
-      class="mt-7 max-w-[16ch] font-sans text-[clamp(2.6rem,1rem+6.5vw,7rem)] font-bold leading-[0.92] tracking-[-0.04em]"
-      data-split
-      data-split-now
-    >
-      {title}
-    </h1>
-
-    {
-      intro && (
-        <p
-          class="mt-8 max-w-2xl text-xl leading-relaxed text-ink/70"
-          data-reveal
-          style="--reveal-delay:250ms"
-        >
-          {intro}
-        </p>
-      )
-    }
-
-    <div class="mt-8"><slot name="actions" /></div>
-  </div>
-
-  {
-    asset && (
-      <div class="shell mt-14 md:mt-20">
+{
+  cinematic ? (
+    <section class="page-hero relative flex min-h-[70vh] items-end overflow-hidden bg-graphite text-paper md:min-h-[80vh]">
+      <div class="absolute inset-0" data-parallax="0.12">
         <Figure
           asset={asset}
-          aspect={imageAspect}
-          class="media-reveal rounded-2xl"
-          data-reveal
-          data-parallax="0.05"
           eager
+          aspect="auto"
+          class="page-hero-media media-reveal !aspect-auto absolute -top-[8%] left-0 h-[116%] w-full"
+          imgClass="h-full w-full object-cover"
+          data-reveal
         />
       </div>
-    )
+      <div class="absolute inset-0 bg-gradient-to-t from-graphite via-graphite/40 to-graphite/25" />
+      <div class="absolute inset-0 bg-gradient-to-br from-blueprint/40 via-transparent to-transparent mix-blend-multiply" />
+
+      <div class="shell relative z-10 w-full pb-14 pt-32 md:pb-20">
+        <div class="flex items-start justify-between gap-6">
+          {kicker && (
+            <p class="kicker !text-paper/70" data-reveal>
+              {kicker}
+            </p>
+          )}
+          {index && (
+            <span class="corner-label text-paper/45" data-reveal>
+              {index}
+            </span>
+          )}
+        </div>
+
+        <h1
+          class="mt-7 max-w-[16ch] font-sans text-[clamp(2.6rem,1rem+6.8vw,7.5rem)] font-bold leading-[0.9] tracking-[-0.04em]"
+          data-split
+          data-split-now
+        >
+          {title}
+        </h1>
+
+        {intro && (
+          <p
+            class="mt-8 max-w-2xl text-xl leading-relaxed text-paper/80"
+            data-reveal
+            style="--reveal-delay:300ms"
+          >
+            {intro}
+          </p>
+        )}
+
+        <div class="mt-8">
+          <slot name="actions" />
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="relative bg-paper pt-32 md:pt-44">
+      <div class="shell">
+        <div class="flex items-start justify-between gap-6">
+          {kicker && (
+            <p class="kicker" data-reveal>
+              {kicker}
+            </p>
+          )}
+          {index && (
+            <span class="corner-label text-taupe" data-reveal>
+              {index}
+            </span>
+          )}
+        </div>
+
+        <h1
+          class="mt-7 max-w-[16ch] font-sans text-[clamp(2.6rem,1rem+6.5vw,7rem)] font-bold leading-[0.92] tracking-[-0.04em]"
+          data-split
+          data-split-now
+        >
+          {title}
+        </h1>
+
+        {intro && (
+          <p
+            class="mt-8 max-w-2xl text-xl leading-relaxed text-ink/70"
+            data-reveal
+            style="--reveal-delay:250ms"
+          >
+            {intro}
+          </p>
+        )}
+
+        <div class="mt-8">
+          <slot name="actions" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .page-hero-media {
+    animation: ph-kenburns 22s var(--ease-out-expo) forwards;
+    transform-origin: 55% 45%;
   }
-</section>
+  @keyframes ph-kenburns {
+    from {
+      transform: scale(1.07);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .page-hero-media {
+      animation: none;
+    }
+  }
+</style>
