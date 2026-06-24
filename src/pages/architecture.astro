@@ -1,0 +1,103 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import FounderCard from '@components/sections/FounderCard.astro';
+import Steps from '@components/ui/Steps.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import ContactCta from '@components/sections/ContactCta.astro';
+import { getFounder } from '@data/founders';
+import { assets } from '@data/assets';
+import { getProjects } from '@lib/projects';
+
+const esad = getFounder('esad');
+const related = (await getProjects())
+  .filter((p) => p.data.expertise === 'architecture' || p.data.expertise === 'full-chain')
+  .slice(0, 3);
+
+const steps = [
+  { title: 'Feasibility & risk', text: 'What can responsibly and profitably be built on this site — tested against zoning, density and cost before anyone commits.' },
+  { title: 'Massing & yield', text: 'Volume, orientation and daylight worked against the envelope to maximise sellable area without compromising quality.' },
+  { title: 'Preliminary design', text: 'The parti, the plan and the section — the architectural idea made concrete and credible.' },
+  { title: 'Permit-ready documentation', text: 'Plans and sections coordinated with engineers and authorities, ready for the permit application.' },
+  { title: 'Handover to execution', text: 'Trusted Bauleitung partners take the project on site. We stay involved; we don’t pretend to do it all.' },
+];
+---
+
+<BaseLayout
+  title="Architecture"
+  description="Architecture at ZweiFach, led by ETH architect Esad Mujanovic: feasibility studies, risk and yield analysis, design and permit-ready plans — a buildable, financeable project."
+>
+  <PageHero
+    kicker="Architecture · Esad Mujanovic"
+    title="A buildable, financeable design."
+    intro="Architecture here is not decoration — it is the first lever of value. Esad turns a site and an intention into a project a bank can fund and a buyer can want."
+    asset={assets.caseHoehenweg}
+  />
+
+  <Section tone="paper">
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal>
+        <p class="kicker">What architecture covers</p>
+        <h2 class="mt-4 font-serif text-4xl leading-[1.06] md:text-5xl">
+          From raw site to permit-ready.
+        </h2>
+        <p class="mt-6 text-lg leading-relaxed text-ink/70">{esad.bio}</p>
+
+        <p class="kicker kicker--bare mt-10">Delivers</p>
+        <ul class="mt-4 grid gap-2.5 text-ink/80 sm:grid-cols-2">
+          {esad.does.map((d) => (
+            <li class="flex gap-2.5 text-[0.95rem]">
+              <span class="text-blueprint">—</span>
+              {d}
+            </li>
+          ))}
+        </ul>
+
+        {esad.doesNot && (
+          <div class="mt-8 rounded-xl border border-ink/10 bg-paper-2 p-5">
+            <p class="kicker kicker--bare">Scope, stated honestly</p>
+            <ul class="mt-2 space-y-1.5 text-sm text-ink/60">
+              {esad.doesNot.map((d) => (
+                <li class="flex gap-2.5">
+                  <span class="text-taupe">·</span>
+                  {d}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      <FounderCard founder={esad} />
+    </div>
+  </Section>
+
+  <Section tone="paper-2">
+    <SectionHeading
+      kicker="Process"
+      title="How a project takes shape."
+      intro="A clear sequence from first question to permit — each step de-risking the next."
+    />
+    <Steps items={steps} strand="blueprint" class="mt-12" />
+  </Section>
+
+  {
+    related.length > 0 && (
+      <Section tone="paper">
+        <SectionHeading kicker="Related work" title="Architecture in the chain." />
+        <div class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((p) => (
+            <ProjectCard project={p} />
+          ))}
+        </div>
+      </Section>
+    )
+  }
+
+  <ContactCta
+    heading="Have a site? Start with feasibility."
+    text="Send us the parcel and the intention. We’ll tell you what can be built — and whether it can be financed and sold."
+  />
+</BaseLayout>

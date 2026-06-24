@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import { site } from '@data/site';
+---
+
+<BaseLayout title="Imprint" description="Legal imprint for ZweiFach Immo GmbH." noindex>
+  <PageHero kicker="Legal" title="Imprint" />
+  <Section tone="paper">
+    <div class="prose-zf max-w-2xl">
+      <blockquote>
+        Placeholder legal text. Replace with verified company details and have it
+        reviewed before publishing.
+      </blockquote>
+
+      <h2>Company</h2>
+      <p>
+        {site.legalName}<br />
+        {site.location.street}, {site.location.city}<br />
+        {site.location.canton}, {site.location.country}
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Email: <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
+        Phone: {site.contact.phone}
+      </p>
+
+      <h2>Commercial register</h2>
+      <p>UID: CHE-XXX.XXX.XXX (to be confirmed)<br />Registered office: {site.location.city}, {site.location.canton}.</p>
+
+      <h2>Represented by</h2>
+      <p>Esad Mujanovic · Dionis Fetahaj</p>
+
+      <h2>Disclaimer</h2>
+      <p>
+        The content of this website has been prepared with care. We accept no
+        liability for the accuracy, completeness or timeliness of the information.
+        Links to external websites are outside our responsibility.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import ContactCta from '@components/sections/ContactCta.astro';
+import { getProjects } from '@lib/projects';
+
+const projects = await getProjects();
+
+const filters = [
+  { key: 'all', label: 'All' },
+  { key: 'full-chain', label: 'Full chain' },
+  { key: 'architecture', label: 'Architecture' },
+  { key: 'commercialization', label: 'Commercialization' },
+];
+---
+
+<BaseLayout
+  title="Projects"
+  description="Selected ZweiFach case studies — showing the exact role of each principal across the value chain, from feasibility and design to off-plan pre-sale and sell-through."
+>
+  <PageHero
+    kicker="Projects"
+    title="Proof, not promises."
+    intro="Each case study shows the chain in action — who did what, from feasibility and plans to the pre-sale that cleared the bank’s quota."
+  />
+
+  <Section tone="paper">
+    <!-- filter bar -->
+    <div class="flex flex-wrap gap-2.5" role="group" aria-label="Filter projects by expertise">
+      {
+        filters.map((f, i) => (
+          <button
+            type="button"
+            data-filter={f.key}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            class="filter-chip rounded-full border border-ink/15 px-4 py-2 font-mono text-xs uppercase tracking-wider text-ink/60 transition-colors hover:border-ink/40 aria-[pressed=true]:border-ink aria-[pressed=true]:bg-ink aria-[pressed=true]:text-paper"
+          >
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <ul
+      data-project-grid
+      class="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        projects.map((p, i) => (
+          <li data-expertise={p.data.expertise}>
+            <ProjectCard project={p} eager={i < 3} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-12 font-mono text-[0.7rem] uppercase tracking-wider text-taupe">
+      Placeholder case studies — to be replaced with real projects.
+    </p>
+  </Section>
+
+  <ContactCta />
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLLIElement>('[data-project-grid] > li');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      items.forEach((li) => {
+        const show = key === 'all' || li.dataset.expertise === key;
+        li.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>

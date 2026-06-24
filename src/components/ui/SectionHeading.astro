@@ -1,0 +1,36 @@
+---
+interface Props {
+  kicker?: string;
+  title: string;
+  intro?: string;
+  align?: 'left' | 'center';
+  /** Heading font: serif (editorial, default) or sans (architectural). */
+  font?: 'serif' | 'sans';
+  as?: 'h1' | 'h2' | 'h3';
+  class?: string;
+}
+const {
+  kicker,
+  title,
+  intro,
+  align = 'left',
+  font = 'serif',
+  as: Tag = 'h2',
+  class: className = '',
+} = Astro.props;
+
+const titleFont =
+  font === 'serif'
+    ? 'font-serif text-4xl leading-[1.06] md:text-5xl'
+    : 'font-sans text-3xl font-bold tracking-tight md:text-5xl';
+---
+
+<div
+  data-reveal
+  class:list={['max-w-3xl', align === 'center' && 'mx-auto text-center', className]}
+>
+  {kicker && <p class:list={['kicker', align === 'center' && 'kicker--bare justify-center']}>{kicker}</p>}
+  <Tag class:list={['mt-4', titleFont]}>{title}</Tag>
+  {intro && <p class="mt-5 text-lg leading-relaxed text-ink/65">{intro}</p>}
+  <slot />
+</div>

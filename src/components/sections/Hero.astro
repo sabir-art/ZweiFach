@@ -1,0 +1,53 @@
+---
+import { site } from '@data/site';
+import { assets } from '@data/assets';
+import Button from '@components/ui/Button.astro';
+import Figure from '@components/ui/Figure.astro';
+---
+
+<section class="relative min-h-[100svh] w-full overflow-hidden bg-graphite text-paper">
+  <Figure
+    asset={assets.homeHero}
+    eager
+    aspect="auto"
+    class="absolute inset-0 !aspect-auto h-full w-full"
+    imgClass="h-full w-full object-cover"
+  />
+  <!-- legibility scrims -->
+  <div class="absolute inset-0 bg-gradient-to-t from-graphite/90 via-graphite/35 to-graphite/20"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-graphite/75 via-graphite/10 to-transparent"></div>
+
+  <div class="shell relative flex min-h-[100svh] flex-col justify-end pb-16 pt-32 md:pb-24">
+    <div class="max-w-3xl" data-reveal>
+      <p class="kicker !text-paper/70">
+        {site.location.city} · {site.location.canton} — Architecture × Commercialization
+      </p>
+      <h1 class="mt-5 font-sans text-[clamp(2.6rem,1rem+7vw,6rem)] font-bold leading-[0.96] tracking-[-0.03em]">
+        From land to the last<br class="hidden sm:block" /> apartment{' '}
+        <span class="font-serif font-normal italic text-clay-soft">sold.</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
+        {site.shortPitch}
+      </p>
+      <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <Button href="/contact/" variant="inverse">Talk about your project</Button>
+        <Button href="/method/" variant="line" class="!text-paper">See the method</Button>
+      </div>
+    </div>
+
+    <!-- the chain, previewed -->
+    <div
+      class="mt-14 hidden flex-wrap items-center gap-3 font-mono text-[0.7rem] uppercase tracking-wider text-paper/55 md:flex"
+      data-reveal
+      style="--reveal-delay:220ms"
+    >
+      <span>01 · Land</span>
+      <span class="h-px w-8 bg-paper/30"></span>
+      <span>02 · Feasibility</span>
+      <span class="h-px w-8 bg-paper/30"></span>
+      <span class="text-clay-soft">03 · Bank quota</span>
+      <span class="h-px w-8 bg-paper/30"></span>
+      <span>04 · Sold out</span>
+    </div>
+  </div>
+</section>

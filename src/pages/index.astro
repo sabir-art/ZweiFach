@@ -1,0 +1,142 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Hero from '@components/sections/Hero.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import ValueChain from '@components/sections/ValueChain.astro';
+import FounderCard from '@components/sections/FounderCard.astro';
+import StatBand from '@components/sections/StatBand.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import PartnersStrip from '@components/sections/PartnersStrip.astro';
+import ContactCta from '@components/sections/ContactCta.astro';
+import Button from '@components/ui/Button.astro';
+import Figure from '@components/ui/Figure.astro';
+
+import { founders } from '@data/founders';
+import { assets } from '@data/assets';
+import { getFeaturedProjects } from '@lib/projects';
+
+const featured = await getFeaturedProjects(3);
+const expertiseHref = { architecture: '/architecture/', commercialization: '/commercialization/' };
+---
+
+<BaseLayout headerVariant="over-hero">
+  <Hero />
+
+  <!-- The tension -->
+  <Section tone="paper-2">
+    <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <p class="kicker" data-reveal>The tension</p>
+        <h2 class="mt-5 font-serif text-[clamp(2.2rem,1rem+4vw,4rem)] leading-[1.04]" data-reveal>
+          A beautiful project isn’t enough. It has to be
+          <span class="italic text-clay">financeable.</span>
+        </h2>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink/70" data-reveal>
+          Banks release construction credit only once a quota of apartments is
+          pre-sold — often before ground is broken. Plans alone don’t unlock
+          financing; proven demand does.
+        </p>
+        <p class="mt-4 max-w-xl leading-relaxed text-ink/60" data-reveal>
+          That is the link that breaks on most developments: a strong design with
+          no one to pre-sell it, or a sales effort with nothing buildable behind
+          it. ZweiFach holds both ends of the chain.
+        </p>
+      </div>
+      <Figure
+        asset={assets.archModel}
+        aspect="4 / 3"
+        class="rounded-2xl"
+        data-reveal
+      />
+    </div>
+  </Section>
+
+  <!-- The value chain -->
+  <Section tone="paper" id="method">
+    <SectionHeading
+      kicker="The method"
+      title="One continuous chain, four stages."
+      intro="From a plot to a sold-out building — with no broken link between design and sale. The bank’s pre-sale quota is the gate everything turns on."
+    />
+    <div class="mt-14 md:mt-20">
+      <ValueChain />
+    </div>
+    <div data-reveal>
+      <Button href="/method/" variant="line">See the method in full</Button>
+    </div>
+  </Section>
+
+  <!-- The duo -->
+  <Section tone="paper-2">
+    <SectionHeading
+      kicker="The duo"
+      title="Two specialists, one chain."
+      intro="ZweiFach is deliberately two people — an architect and a commercialization lead — so design and sales are never handed off across a gap."
+    />
+    <div class="mt-14 grid gap-12 md:grid-cols-2 md:gap-16">
+      {
+        founders.map((f) => (
+          <div>
+            <FounderCard founder={f} />
+            <div class="mt-5">
+              <Button href={expertiseHref[f.discipline]} variant="line">
+                Explore {f.discipline}
+              </Button>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- By the numbers -->
+  <Section tone="graphite">
+    <SectionHeading
+      kicker="By the numbers"
+      title="Small by design. Precise by necessity."
+      class="[&_h2]:text-paper [&_.kicker]:!text-paper/55 [&_p]:text-paper/65"
+    />
+    <div class="mt-14">
+      <StatBand tone="graphite" />
+    </div>
+  </Section>
+
+  <!-- Projects -->
+  <Section tone="paper">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <SectionHeading
+        kicker="Selected work"
+        title="Proof, not promises."
+        intro="Case studies showing the exact role each of us played across the chain."
+        class="!max-w-2xl"
+      />
+      <div data-reveal class="hidden md:block">
+        <Button href="/projects/" variant="line">All projects</Button>
+      </div>
+    </div>
+    <div class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      {featured.map((p, i) => <ProjectCard project={p} eager={i === 0} />)}
+    </div>
+    <div class="mt-10 md:hidden" data-reveal>
+      <Button href="/projects/" variant="line">All projects</Button>
+    </div>
+    <p class="mt-10 font-mono text-[0.7rem] uppercase tracking-wider text-taupe" data-reveal>
+      Placeholder case studies — to be replaced with real projects.
+    </p>
+  </Section>
+
+  <!-- Ecosystem -->
+  <Section tone="paper-2">
+    <SectionHeading
+      kicker="Ecosystem"
+      title="Two of us. A wider chain."
+      intro="We design and we sell. Specialist partners extend the chain — without diluting the duo."
+    />
+    <div class="mt-12">
+      <PartnersStrip />
+    </div>
+  </Section>
+
+  <ContactCta />
+</BaseLayout>

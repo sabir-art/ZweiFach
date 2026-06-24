@@ -1,0 +1,42 @@
+---
+import Figure from '@components/ui/Figure.astro';
+import type { GeneratedAsset } from '@data/assets';
+
+interface Props {
+  kicker?: string;
+  title: string;
+  intro?: string;
+  asset?: GeneratedAsset;
+  imageAspect?: string;
+}
+const { kicker, title, intro, asset, imageAspect = '21 / 9' } = Astro.props;
+---
+
+<section class="bg-paper pt-32 md:pt-40">
+  <div class="shell pb-14 md:pb-16">
+    <div class="max-w-4xl">
+      {kicker && <p class="kicker" data-reveal>{kicker}</p>}
+      <h1
+        class="mt-5 font-sans text-[clamp(2.4rem,1rem+5vw,5rem)] font-bold leading-[0.98] tracking-[-0.03em]"
+        data-reveal
+      >
+        {title}
+      </h1>
+      {
+        intro && (
+          <p class="mt-7 max-w-2xl text-xl leading-relaxed text-ink/70" data-reveal>
+            {intro}
+          </p>
+        )
+      }
+      <div class="mt-8"><slot name="actions" /></div>
+    </div>
+  </div>
+  {
+    asset && (
+      <div class="shell pb-4">
+        <Figure asset={asset} aspect={imageAspect} class="rounded-2xl" eager data-reveal />
+      </div>
+    )
+  }
+</section>

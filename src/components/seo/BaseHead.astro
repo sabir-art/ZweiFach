@@ -1,0 +1,85 @@
+---
+import { site } from '@data/site';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  noindex?: boolean;
+  /** Extra JSON-LD object to inject (already a JS object). */
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description = site.description,
+  image = site.ogImage,
+  type = 'website',
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
+
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.name,
+  legalName: site.legalName,
+  description: site.description,
+  url: site.url,
+  email: site.contact.email,
+  areaServed: 'CH',
+  knowsLanguage: ['en', 'de'],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.location.city,
+    addressRegion: site.location.canton,
+    addressCountry: 'CH',
+  },
+  founder: [
+    { '@type': 'Person', name: 'Esad Mujanovic', jobTitle: 'Architect' },
+    { '@type': 'Person', name: 'Dionis Fetahaj', jobTitle: 'Commercialization' },
+  ],
+};
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Mark JS-enabled before paint so scroll-reveal only hides when it can un-hide. -->
+<script is:inline>document.documentElement.classList.add('js');</script>
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Icons & theme -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+<meta name="theme-color" content="#f5f2ec" />
+<meta name="color-scheme" content="light" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content="en" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

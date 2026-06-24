@@ -1,0 +1,95 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import FounderCard from '@components/sections/FounderCard.astro';
+import SpecList from '@components/ui/SpecList.astro';
+import PartnersStrip from '@components/sections/PartnersStrip.astro';
+import ContactCta from '@components/sections/ContactCta.astro';
+import { founders } from '@data/founders';
+
+const firmFacts = [
+  { label: 'Firm', value: 'ZweiFach Immo GmbH' },
+  { label: 'Based', value: 'Däniken, Solothurn' },
+  { label: 'Working area', value: 'Mittelland & NW Switzerland' },
+  { label: 'Founded', value: '2025' },
+  { label: 'Languages', value: 'English · German' },
+  { label: 'Scope', value: 'Design & sales (execution via partners)' },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="ZweiFach is a deliberately small Swiss firm: an ETH architect and a commercialization lead working as one continuous team — design and sales with no broken link between them."
+>
+  <PageHero
+    kicker="About"
+    title="Two people. One unbroken chain."
+    intro="ZweiFach is deliberately small. An architect and a commercialization lead, working as one team — so the people who design the project are the people who get it financed and sold."
+  />
+
+  <Section tone="paper">
+    <div class="grid gap-14 lg:grid-cols-2 lg:gap-20">
+      {founders.map((f) => <FounderCard founder={f} detailed />)}
+    </div>
+  </Section>
+
+  <!-- Why two -->
+  <Section tone="graphite">
+    <div class="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+      <div>
+        <p class="kicker !text-paper/55" data-reveal>Why two is the point</p>
+        <h2 class="mt-5 font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
+          The name is the model.
+        </h2>
+      </div>
+      <div class="space-y-5 text-lg leading-relaxed text-paper/75" data-reveal>
+        <p>
+          <span class="text-paper">ZweiFach</span> means “twofold.” Two people, two
+          disciplines — and, more importantly, one continuous responsibility from
+          the first sketch to the final signature.
+        </p>
+        <p>
+          On most developments, architecture and sales sit in different companies
+          with different incentives. The design gets handed over a wall to whoever
+          has to sell it. That gap is where projects lose time, money and momentum
+          — and where the bank’s pre-sale quota quietly goes unmet.
+        </p>
+        <p>
+          We removed the wall. Esad designs a project to be financeable; Dionis
+          pre-sells it to make the financing real. Neither half waits for the
+          other — they run as one chain.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- The firm -->
+  <Section tone="paper-2">
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-20">
+      <SectionHeading
+        kicker="The firm"
+        title="Small, local, and honest about it."
+        intro="ZweiFach Immo GmbH is young by design — based in Solothurn, working across the Swiss Mittelland. We say plainly what we do and what we don’t: we design and we sell; trusted partners build."
+      />
+      <div data-reveal>
+        <SpecList items={firmFacts} />
+      </div>
+    </div>
+  </Section>
+
+  <!-- Ecosystem -->
+  <Section tone="paper">
+    <SectionHeading
+      kicker="Ecosystem"
+      title="A wider chain, without diluting the duo."
+      intro="Specialist partners extend what two people can deliver — visuals and sales tools on one side, on-site construction management on the other."
+    />
+    <div class="mt-12">
+      <PartnersStrip />
+    </div>
+  </Section>
+
+  <ContactCta />
+</BaseLayout>

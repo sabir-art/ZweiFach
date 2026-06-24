@@ -1,0 +1,87 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import ValueChain from '@components/sections/ValueChain.astro';
+import PartnersStrip from '@components/sections/PartnersStrip.astro';
+import ContactCta from '@components/sections/ContactCta.astro';
+import { quotaSourceNote } from '@data/valueChain';
+---
+
+<BaseLayout
+  title="Method"
+  description="The ZweiFach method: one continuous value chain from land and feasibility, through the bank's pre-sale quota, to a fully commercialized, sold-out building."
+>
+  <PageHero
+    kicker="The method"
+    title="How an idea becomes a sold-out building."
+    intro="A residential development lives or dies on one thing: whether it can be financed. Our method follows the single chain that gets there — and closes the link most teams leave open."
+  />
+
+  <Section tone="paper">
+    <SectionHeading
+      kicker="The chain"
+      title="Four stages, no broken links."
+      intro="Each stage feeds the next. Design is drawn to be financeable; sales begin before construction; the bank’s quota is the gate everything turns on."
+    />
+    <div class="mt-14 max-w-4xl md:mt-20">
+      <ValueChain />
+    </div>
+  </Section>
+
+  <!-- Stage 03 deep dive — the climax -->
+  <Section tone="graphite">
+    <div class="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+      <div>
+        <p class="kicker !text-paper/55" data-reveal>Stage 03 · The pivot</p>
+        <h2 class="mt-5 font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
+          The link that breaks most developments.
+        </h2>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-paper/75" data-reveal>
+          A bank rarely funds a residential project on plans alone. It wants real
+          equity and proof of demand — a quota of apartments already pre-sold —
+          before it releases construction credit, often before ground is broken.
+        </p>
+        <p class="mt-4 max-w-xl leading-relaxed text-paper/60" data-reveal>
+          Most teams can do one half: an architect who designs beautifully but
+          can’t pre-sell, or a sales effort with nothing buildable behind it.
+          ZweiFach holds both ends — so the design is drawn to be financeable, and
+          the pre-sale is running while it’s still on paper.
+        </p>
+      </div>
+
+      <div class="flex flex-col justify-center gap-7" data-reveal>
+        <div class="border-t border-paper/20 pt-4">
+          <p class="font-sans text-5xl font-semibold tracking-tight">20–30%</p>
+          <p class="mt-2 text-sm text-paper/60">Equity a bank typically expects</p>
+        </div>
+        <div class="border-t border-paper/20 pt-4">
+          <p class="font-sans text-5xl font-semibold tracking-tight">40%+</p>
+          <p class="mt-2 text-sm text-paper/60">Apartments often pre-sold before credit is released</p>
+        </div>
+        <div class="border-t border-paper/20 pt-4">
+          <p class="font-sans text-5xl font-semibold tracking-tight text-clay-soft">0</p>
+          <p class="mt-2 text-sm text-paper/60">Broken links between design and sale</p>
+        </div>
+        <p class="text-[0.7rem] leading-relaxed text-paper/40">{quotaSourceNote}</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section tone="paper-2">
+    <SectionHeading
+      kicker="Ecosystem"
+      title="What makes a project pre-sellable."
+      intro="To sell a building that doesn’t exist yet, people have to see and believe it. Our ecosystem partners produce the visuals, brochures and project site that turn plans into reservations."
+    />
+    <div class="mt-12">
+      <PartnersStrip />
+    </div>
+  </Section>
+
+  <ContactCta
+    heading="Map your project to the chain."
+    text="Tell us where you are — a plot, a set of plans, or a building ready to sell — and we’ll show you the path to a financed, sold-out development."
+  />
+</BaseLayout>

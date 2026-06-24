@@ -1,0 +1,19 @@
+---
+/** Wraps content with a scroll-reveal. Degrades to visible without JS / reduced-motion. */
+interface Props {
+  as?: keyof HTMLElementTagNameMap;
+  delay?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+const { as: Tag = 'div', delay = 0, class: className = '', ...rest } = Astro.props;
+---
+
+<Tag
+  data-reveal
+  style={delay ? `--reveal-delay:${delay}ms` : undefined}
+  class:list={[className]}
+  {...rest}
+>
+  <slot />
+</Tag>

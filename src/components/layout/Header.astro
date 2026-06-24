@@ -1,0 +1,89 @@
+---
+import Logo from './Logo.astro';
+import Button from '@components/ui/Button.astro';
+import { mainNav, primaryCta } from '@data/nav';
+
+interface Props {
+  variant?: 'over-hero' | 'solid';
+}
+const { variant = 'solid' } = Astro.props;
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header
+  data-header
+  class:list={[
+    'fixed inset-x-0 top-0 z-50 transition-[background-color,color,border-color,backdrop-filter] duration-500',
+    variant === 'over-hero' ? 'text-paper' : 'text-ink',
+  ]}
+>
+  <div class="shell flex h-20 items-center justify-between">
+    <Logo />
+
+    <!-- Desktop nav -->
+    <nav class="hidden items-center gap-8 md:flex" aria-label="Primary">
+      {
+        mainNav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'link-underline font-sans text-[0.92rem] transition-opacity',
+              isActive(item.href) ? 'opacity-100' : 'opacity-70 hover:opacity-100',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <Button href={primaryCta.href} variant="primary" class="ml-2">
+        {primaryCta.label}
+      </Button>
+    </nav>
+
+    <!-- Mobile toggle -->
+    <button
+      data-menu-toggle
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+      class="relative z-50 flex h-10 w-10 items-center justify-center md:hidden"
+    >
+      <span class="flex flex-col items-end gap-[5px]">
+        <span class="block h-[1.5px] w-6 bg-current"></span>
+        <span class="block h-[1.5px] w-4 bg-current"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Mobile menu overlay -->
+  <div
+    data-menu
+    id="mobile-menu"
+    class="menu-overlay fixed inset-0 z-40 flex translate-y-[-100%] flex-col bg-paper text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden"
+  >
+    <div class="shell flex h-20 items-center">
+      <Logo />
+    </div>
+    <nav class="shell flex flex-1 flex-col justify-center gap-2 pb-24" aria-label="Mobile">
+      {
+        mainNav.map((item, i) => (
+          <a
+            href={item.href}
+            class="group flex items-baseline justify-between border-t border-ink/10 py-5"
+          >
+            <span class="font-serif text-3xl">{item.label}</span>
+            <span class="font-mono text-xs text-taupe">0{i + 1}</span>
+          </a>
+        ))
+      }
+      <div class="mt-8">
+        <Button href={primaryCta.href} variant="primary">{primaryCta.label}</Button>
+      </div>
+    </nav>
+  </div>
+</header>

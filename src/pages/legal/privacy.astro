@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import { site } from '@data/site';
+---
+
+<BaseLayout title="Privacy" description="Privacy policy for ZweiFach." noindex>
+  <PageHero kicker="Legal" title="Privacy" />
+  <Section tone="paper">
+    <div class="prose-zf max-w-2xl">
+      <blockquote>
+        Placeholder privacy policy. Review against the Swiss FADP (revDSG) and, where
+        relevant, the GDPR before publishing.
+      </blockquote>
+
+      <h2>Controller</h2>
+      <p>
+        {site.legalName}, {site.location.city}, {site.location.canton}, {site.location.country}.
+        Contact: <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+      </p>
+
+      <h2>What we collect</h2>
+      <p>
+        When you use the contact form, your email client sends us the details you
+        provide (name, email, optional company, your enquiry). We use them solely to
+        respond to your request.
+      </p>
+
+      <h2>Hosting & logs</h2>
+      <p>
+        This site is served as static files. The hosting provider may process
+        standard server logs (e.g. IP address, timestamp) to operate and secure the
+        service.
+      </p>
+
+      <h2>Cookies & analytics</h2>
+      <p>
+        This site sets no marketing cookies and runs no third-party analytics by
+        default. If that changes, this policy will be updated accordingly.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You may request access to, correction of, or deletion of your personal data.
+        Contact us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+interface Props {
+  items: { label: string; value: string }[];
+  class?: string;
+}
+const { items, class: className = '' } = Astro.props;
+---
+
+<dl class:list={[className]}>
+  {
+    items.map((it) => (
+      <div class="spec-row">
+        <dt>{it.label}</dt>
+        <dd>{it.value}</dd>
+      </div>
+    ))
+  }
+</dl>

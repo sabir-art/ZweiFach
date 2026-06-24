@@ -1,0 +1,93 @@
+---
+import { valueChain, quotaSourceNote, type Stage } from '@data/valueChain';
+
+/** The through-line, made literal: one spine, four nodes, two strands → one line. */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const ownerLabel = (s: Stage) => {
+  switch (s.owner) {
+    case 'esad':
+      return 'Esad · Architecture';
+    case 'dionis':
+      return 'Dionis · Commercialization';
+    case 'both':
+      return 'Esad + Dionis';
+    default:
+      return 'The starting point';
+  }
+};
+
+const dotClass: Record<Stage['strand'], string> = {
+  neutral: 'h-2.5 w-2.5 border border-ink bg-paper',
+  blueprint: 'h-2.5 w-2.5 border-2 border-blueprint bg-paper',
+  pivot: 'h-4 w-4 bg-ink ring-4 ring-clay/25',
+  clay: 'h-2.5 w-2.5 border-2 border-clay bg-clay',
+};
+---
+
+<div class:list={['relative', className]}>
+  <!-- The spine: one continuous line, blueprint → clay -->
+  <div
+    data-reveal
+    class="is-line pointer-events-none absolute left-[0.875rem] top-2 bottom-2 w-px bg-gradient-to-b from-blueprint via-blueprint to-clay md:left-[1.125rem]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <ol class="relative">
+    {
+      valueChain.map((s, i) => (
+        <li class="grid grid-cols-[1.75rem_1fr] gap-x-5 md:grid-cols-[2.25rem_1fr] md:gap-x-8">
+          <div class="flex justify-center">
+            <span
+              class:list={['relative z-10 mt-2 rounded-full', dotClass[s.strand]]}
+              aria-hidden="true"
+            />
+          </div>
+
+          <div data-reveal style={`--reveal-delay:${i * 90}ms`} class="pb-12 md:pb-16">
+            <p class="kicker kicker--bare">
+              <span class="font-bold text-ink">{s.n}</span>
+              <span class="mx-2 opacity-40">/</span>
+              <span>{ownerLabel(s)}</span>
+            </p>
+
+            {s.isPivot ? (
+              <div class="mt-3 rounded-2xl bg-graphite p-6 text-paper md:p-8">
+                <h3 class="font-serif text-[1.7rem] leading-tight md:text-4xl">{s.title}</h3>
+                <p class="mt-3 max-w-xl text-lg text-paper/85">{s.lead}</p>
+                <p class="mt-3 max-w-xl text-sm leading-relaxed text-paper/60">{s.body}</p>
+                <ul class="mt-5 grid gap-2 font-mono text-xs text-paper/80">
+                  {s.points.map((p) => (
+                    <li class="flex gap-2.5">
+                      <span class="text-clay-soft">—</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <p class="mt-5 text-[0.7rem] leading-relaxed text-paper/40">{quotaSourceNote}</p>
+              </div>
+            ) : (
+              <div class="mt-2">
+                <h3 class="font-serif text-[1.7rem] leading-tight md:text-4xl">{s.title}</h3>
+                <p class="mt-2 max-w-xl text-lg text-ink/80">{s.lead}</p>
+                <p class="mt-2 max-w-xl text-sm leading-relaxed text-ink/60">{s.body}</p>
+                <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-1.5 font-mono text-xs text-taupe">
+                  {s.points.map((p) => (
+                    <li class="flex gap-2">
+                      <span class="text-clay">—</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>

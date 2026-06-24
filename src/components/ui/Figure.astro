@@ -1,0 +1,62 @@
+---
+import { assetSrc, type GeneratedAsset } from '@data/assets';
+
+/**
+ * Resilient image frame. Accepts a manifest asset or a raw URL. Falls back to a
+ * branded "plan paper" placeholder if no source is given (or while loading /
+ * if the source is unreachable). Uses a plain <img> so the build never fetches
+ * remote bytes — keeps the build green regardless of network policy.
+ */
+interface Props {
+  asset?: GeneratedAsset;
+  src?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  /** CSS aspect-ratio, e.g. "16/9". Defaults from asset dims or 16/9. */
+  aspect?: string;
+  class?: string;
+  imgClass?: string;
+  eager?: boolean;
+  sizes?: string;
+}
+const {
+  asset,
+  src,
+  alt,
+  width,
+  height,
+  aspect,
+  class: className = '',
+  imgClass = '',
+  eager = false,
+  sizes,
+} = Astro.props;
+
+const url = src ?? (asset ? assetSrc(asset) : undefined);
+const altText = alt ?? asset?.alt ?? '';
+const w = width ?? asset?.width;
+const h = height ?? asset?.height;
+const ratio = aspect ?? (w && h ? `${w} / ${h}` : '16 / 9');
+---
+
+<figure
+  class:list={['fig-grid relative overflow-hidden', className]}
+  style={`aspect-ratio:${ratio}`}
+>
+  {
+    url && (
+      <img
+        src={url}
+        alt={altText}
+        width={w}
+        height={h}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        sizes={sizes}
+        class:list={['h-full w-full object-cover', imgClass]}
+      />
+    )
+  }
+  <slot />
+</figure>

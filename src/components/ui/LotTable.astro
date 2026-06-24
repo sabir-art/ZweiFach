@@ -1,0 +1,70 @@
+---
+import { lotStatusLabel } from '@lib/projects';
+
+interface Lot {
+  name: string;
+  rooms: string;
+  floor: string;
+  sqm: string;
+  price: string;
+  status: 'available' | 'reserved' | 'sold';
+}
+interface Props {
+  lots: Lot[];
+}
+const { lots } = Astro.props;
+
+const sold = lots.filter((l) => l.status === 'sold').length;
+const pct = lots.length ? Math.round((sold / lots.length) * 100) : 0;
+
+const statusStyle: Record<Lot['status'], string> = {
+  sold: 'text-taupe',
+  reserved: 'text-clay',
+  available: 'text-blueprint',
+};
+---
+
+<div>
+  <div class="flex items-end justify-between">
+    <p class="kicker kicker--bare">Lot schedule</p>
+    <p class="font-mono text-xs text-ink/70"><span class="text-clay">{pct}%</span> sold</p>
+  </div>
+
+  <!-- rarity bar -->
+  <div class="mt-3 h-1 w-full overflow-hidden rounded-full bg-ink/10" aria-hidden="true">
+    <div class="h-full rounded-full bg-gradient-to-r from-blueprint to-clay" style={`width:${pct}%`}></div>
+  </div>
+
+  <div class="mt-5 overflow-x-auto rounded-xl border border-ink/10">
+    <table
+      class="w-full min-w-[34rem] text-left text-sm [&_td]:px-3 [&_td]:py-3 [&_th]:px-3 [&_th]:py-3 [&_td:first-child]:pl-5 [&_th:first-child]:pl-5 [&_td:last-child]:pr-5 [&_th:last-child]:pr-5"
+    >
+      <thead class="bg-paper-2 font-mono text-[0.62rem] uppercase tracking-wider text-taupe">
+        <tr>
+          <th scope="col">Lot</th>
+          <th scope="col">Rooms</th>
+          <th scope="col">Floor</th>
+          <th scope="col">m²</th>
+          <th scope="col">Price</th>
+          <th scope="col" class="text-right">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          lots.map((l) => (
+            <tr class="border-t border-ink/10">
+              <td class="font-medium">{l.name}</td>
+              <td>{l.rooms}</td>
+              <td>{l.floor}</td>
+              <td>{l.sqm}</td>
+              <td class="font-mono text-xs">{l.price}</td>
+              <td class:list={['text-right font-mono text-xs', statusStyle[l.status]]}>
+                {lotStatusLabel[l.status]}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

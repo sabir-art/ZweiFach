@@ -1,0 +1,21 @@
+---
+interface Props {
+  items: { title: string; text: string }[];
+  strand?: 'blueprint' | 'clay';
+  class?: string;
+}
+const { items, strand = 'blueprint', class: className = '' } = Astro.props;
+const accent = strand === 'blueprint' ? 'text-blueprint' : 'text-clay';
+---
+
+<ol class:list={['grid gap-8 sm:grid-cols-2 lg:grid-cols-3', className]}>
+  {
+    items.map((it, i) => (
+      <li data-reveal style={`--reveal-delay:${i * 70}ms`} class="border-t border-ink/15 pt-5">
+        <span class:list={['font-mono text-sm', accent]}>{String(i + 1).padStart(2, '0')}</span>
+        <h3 class="mt-3 font-serif text-2xl leading-tight">{it.title}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink/65">{it.text}</p>
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+---
+
+<BaseLayout title="Page not found" noindex>
+  <section class="flex min-h-[80svh] items-center">
+    <div class="shell">
+      <p class="kicker">404</p>
+      <h1 class="mt-5 font-sans text-[clamp(2.6rem,1rem+6vw,5.5rem)] font-bold leading-[0.98] tracking-[-0.03em]">
+        A broken link.
+      </h1>
+      <p class="mt-6 max-w-md text-lg text-ink/65">
+        Fitting, given what we do — but not one we meant to leave. Let’s get you
+        back on the chain.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-x-6 gap-y-4">
+        <Button href="/" variant="primary">Back home</Button>
+        <Button href="/projects/" variant="line">See the work</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

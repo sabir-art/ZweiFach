@@ -1,0 +1,98 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import FounderCard from '@components/sections/FounderCard.astro';
+import Steps from '@components/ui/Steps.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import ContactCta from '@components/sections/ContactCta.astro';
+import { getFounder } from '@data/founders';
+import { assets } from '@data/assets';
+import { getProjects } from '@lib/projects';
+
+const dionis = getFounder('dionis');
+const related = (await getProjects())
+  .filter((p) => p.data.expertise === 'commercialization' || p.data.expertise === 'full-chain')
+  .slice(0, 3);
+
+const steps = [
+  { title: 'Positioning & pricing', text: 'Read the market, define the buyer, and set a price strategy the project can actually achieve.' },
+  { title: 'Sales dossier', text: 'The lot schedule, the numbers and the story — everything a serious buyer and a bank need to say yes.' },
+  { title: 'Visual production', text: '3D renders, brochure and a project microsite — produced with CloudOnPoint — so people can see a building that isn’t there yet.' },
+  { title: 'Off-plan pre-sale', text: 'Reservations on plans, driven hard enough to clear the bank’s quota and unlock construction credit.' },
+  { title: 'Sell-through', text: 'Manage the pipeline from first reservation to the final unit, through construction and beyond.' },
+];
+---
+
+<BaseLayout
+  title="Commercialization"
+  description="Commercialization at ZweiFach, led by Dionis Fetahaj: pricing strategy, sales dossier and off-plan pre-sale that clears the bank's quota and sells a development through to the last lot."
+>
+  <PageHero
+    kicker="Commercialization · Dionis Fetahaj"
+    title="Pre-sold on plans. Sold to the last lot."
+    intro="Commercialization here isn’t brokerage after the fact — it’s the work that makes a project financeable. Dionis prices it, packages it, and pre-sells it before it’s built."
+    asset={assets.interiorLiving}
+  />
+
+  <Section tone="paper">
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal>
+        <p class="kicker">What commercialization covers</p>
+        <h2 class="mt-4 font-serif text-4xl leading-[1.06] md:text-5xl">
+          From price strategy to sold out.
+        </h2>
+        <p class="mt-6 text-lg leading-relaxed text-ink/70">{dionis.bio}</p>
+
+        <p class="kicker kicker--bare mt-10">Delivers</p>
+        <ul class="mt-4 grid gap-2.5 text-ink/80 sm:grid-cols-2">
+          {dionis.does.map((d) => (
+            <li class="flex gap-2.5 text-[0.95rem]">
+              <span class="text-clay">—</span>
+              {d}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-8 rounded-xl border border-ink/10 bg-paper-2 p-5">
+          <p class="kicker kicker--bare">Why it comes first, not last</p>
+          <p class="mt-2 text-sm leading-relaxed text-ink/60">
+            Pre-sales aren’t the victory lap — they’re the gate. Without them the
+            bank doesn’t fund, and the project doesn’t get built. That’s why
+            commercialization is planned from the very start.
+          </p>
+        </div>
+      </div>
+
+      <FounderCard founder={dionis} />
+    </div>
+  </Section>
+
+  <Section tone="paper-2">
+    <SectionHeading
+      kicker="Process"
+      title="How a project gets sold."
+      intro="A sequence built to reach the bank’s pre-sale quota — then carry through to completion."
+    />
+    <Steps items={steps} strand="clay" class="mt-12" />
+  </Section>
+
+  {
+    related.length > 0 && (
+      <Section tone="paper">
+        <SectionHeading kicker="Related work" title="Commercialization in the chain." />
+        <div class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((p) => (
+            <ProjectCard project={p} />
+          ))}
+        </div>
+      </Section>
+    )
+  }
+
+  <ContactCta
+    heading="Preparing to go to market?"
+    text="Bring us the project. We’ll position it, price it, and build the pre-sale that unlocks your financing."
+  />
+</BaseLayout>

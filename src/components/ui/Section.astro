@@ -1,0 +1,27 @@
+---
+/** Section wrapper with consistent vertical rhythm and tone. */
+interface Props {
+  id?: string;
+  tone?: 'paper' | 'paper-2' | 'graphite';
+  spacing?: 'default' | 'tight' | 'loose';
+  class?: string;
+  /** Render the inner shell automatically. Set false to control width yourself. */
+  shell?: boolean;
+}
+const { id, tone = 'paper', spacing = 'default', class: className = '', shell = true } = Astro.props;
+
+const tones: Record<string, string> = {
+  paper: 'bg-paper text-ink',
+  'paper-2': 'bg-paper-2 text-ink',
+  graphite: 'bg-graphite text-paper',
+};
+const pads: Record<string, string> = {
+  default: 'py-20 md:py-28 lg:py-32',
+  tight: 'py-14 md:py-20',
+  loose: 'py-24 md:py-36 lg:py-44',
+};
+---
+
+<section id={id} class:list={[tones[tone], pads[spacing], className]}>
+  {shell ? <div class="shell"><slot /></div> : <slot />}
+</section>

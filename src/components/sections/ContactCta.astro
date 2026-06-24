@@ -1,0 +1,45 @@
+---
+import Button from '@components/ui/Button.astro';
+
+interface Props {
+  heading?: string;
+  text?: string;
+}
+const {
+  heading = 'Let’s talk about your project.',
+  text = 'Whether you have land, a project to structure, or a building to bring to market — the chain starts with a conversation.',
+} = Astro.props;
+
+const intents = [
+  { label: 'I have land', href: '/contact/?intent=land' },
+  { label: 'I have a project to structure', href: '/contact/?intent=structure' },
+  { label: 'I’m preparing to go to market', href: '/contact/?intent=market' },
+];
+---
+
+<section class="bg-graphite text-paper">
+  <div class="shell py-20 md:py-28">
+    <div class="h-[2px] w-16 bg-gradient-to-r from-blueprint to-clay" data-reveal aria-hidden="true"></div>
+    <h2 class="mt-7 max-w-3xl font-serif text-4xl leading-[1.05] md:text-6xl" data-reveal>
+      {heading}
+    </h2>
+    <p class="mt-5 max-w-xl text-lg text-paper/70" data-reveal>{text}</p>
+
+    <div class="mt-9 flex flex-wrap gap-3" data-reveal>
+      {
+        intents.map((i) => (
+          <a
+            href={i.href}
+            class="rounded-full border border-paper/25 px-4 py-2 text-sm text-paper/85 transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-ink"
+          >
+            {i.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-10" data-reveal>
+      <Button href="/contact/" variant="inverse">Talk about your project</Button>
+    </div>
+  </div>
+</section>
