@@ -398,12 +398,16 @@
   letter-spacing: -0.02em;
 }
 
-/* Big editorial image with clip-path mask reveal (bottom → top wipe).
+/* Big editorial image with clip-path POLYGON mask reveal (bottom → top wipe).
    JS-gated via `reveal-ready` so the image is fully visible if the script
    never runs; the clip only applies once JS has taken over. */
 .media-reveal { transition: clip-path 1.2s var(--ease-out-expo); }
-[data-reveal].media-reveal.reveal-ready { clip-path: inset(0 0 100% 0); }
-[data-reveal].media-reveal.reveal-ready.is-in { clip-path: inset(0 0 0% 0); }
+[data-reveal].media-reveal.reveal-ready {
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+}
+[data-reveal].media-reveal.reveal-ready.is-in {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
 
 /* Hairline */
 .hr-line { height: 1px; background: color-mix(in srgb, var(--color-ink) 12%, transparent); }
@@ -534,6 +538,20 @@ html.pl-skip .preloader { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .tl-img { transition: none; }
   .tl-step { opacity: 1 !important; }
+}
+
+/* ============================================================
+   Design stacked slides — vertical by default (mobile / no-JS),
+   absolute-stacked + pinned once JS adds `.is-stacked` (initStack)
+   ============================================================ */
+.stack-track.is-stacked {
+  height: 100vh;
+  overflow: hidden;
+}
+.stack-track.is-stacked .stack-slide {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
 }
 
 /* ============================================================

@@ -337,6 +337,47 @@ function initHorizontal() {
   });
 }
 
+/* ---------- Pinned stacked slides (pin + scrub + polygon clip reveals) ---------- */
+function initStack() {
+  if (reduce || window.innerWidth < 1024) return; // mobile: vertical stack, no pin
+  document.querySelectorAll<HTMLElement>('[data-stack]').forEach((root) => {
+    if (root.dataset.stackDone) return;
+    root.dataset.stackDone = '1';
+    const track = root.querySelector<HTMLElement>('[data-stack-track]');
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-stack-slide]'));
+    const bar = root.querySelector<HTMLElement>('[data-stack-bar]');
+    const n = slides.length;
+    if (!track || n < 2) return;
+    track.classList.add('is-stacked');
+
+    const FULL = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
+    const fromLeft = 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)';
+    const fromRight = 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)';
+    gsap.set(slides[0], { clipPath: FULL });
+    slides.forEach((s, i) => {
+      if (i > 0) gsap.set(s, { clipPath: i % 2 ? fromRight : fromLeft });
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: root,
+        start: 'top top',
+        end: () => '+=' + n * window.innerHeight,
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          if (bar) bar.style.transform = `scaleX(${self.progress})`;
+        },
+      },
+    });
+    for (let i = 1; i < n; i++) {
+      tl.to(slides[i], { clipPath: FULL, ease: 'none', duration: 1 }, i);
+    }
+  });
+}
+
 /* ---------- Scroll zoom-out (image starts zoomed, settles to 1) ---------- */
 function initZoom() {
   if (reduce) return;
@@ -492,6 +533,7 @@ function initPage() {
   safe('parallax', initParallax);
   safe('throughline', initThroughline);
   safe('horizontal', initHorizontal);
+  safe('stack', initStack);
   safe('zoom', initZoom);
   safe('switcher', initSwitcher);
   safe('magnetic', initMagnetic);

@@ -169,14 +169,14 @@ const dot = (s: string) => (s === 'clay' ? 'bg-clay' : 'bg-blueprint');
   }
 
   .switch-media {
-    clip-path: inset(0 100% 0 0);
+    clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);
     opacity: 0;
     transition:
       clip-path 0.85s var(--ease-out-expo),
       opacity 0.5s var(--ease-out-expo);
   }
   .switch-media.is-active {
-    clip-path: inset(0 0 0 0);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     opacity: 1;
   }
 

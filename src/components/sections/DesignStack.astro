@@ -1,0 +1,71 @@
+---
+/**
+ * DesignStack — pinned stacked slides (Springs "Design").
+ * The section pins (GSAP pin:true + scrub:true via initStack) and each design
+ * slide wipes in over the previous one with an alternating left/right polygon
+ * clip-path; image and caption reveal together. Mobile / no-JS: the slides
+ * fall back to a clean vertical stack (no pin), fully readable.
+ */
+import { heroShots } from '@data/media';
+
+const slides = [
+  {
+    n: '01',
+    t: 'Massing & daylight',
+    d: 'Volume and orientation worked against the plot — maximising sellable area without losing light, calm or proportion.',
+    img: heroShots[0],
+  },
+  {
+    n: '02',
+    t: 'Plans & sections',
+    d: 'The architectural idea made concrete and permit-ready — drawn from the first line to be financeable, not just beautiful.',
+    img: heroShots[2],
+  },
+  {
+    n: '03',
+    t: 'Material & detail',
+    d: 'Warm limestone, oak and stone — a restrained palette that reads as premium on day one and ages with grace.',
+    img: heroShots[1],
+  },
+];
+---
+
+<section class="relative bg-ink text-paper" data-stack>
+  <div class="stack-track relative" data-stack-track>
+    {
+      slides.map((s) => (
+        <article
+          class="stack-slide relative flex min-h-[90vh] items-end overflow-hidden"
+          data-stack-slide
+        >
+          <img
+            src={s.img}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/10" />
+          <div class="shell relative z-10 w-full pb-16 md:pb-24">
+            <div class="flex items-center gap-4">
+              <span class="corner-label text-paper/60">Design</span>
+              <span class="corner-label text-clay-soft">{s.n}</span>
+            </div>
+            <h3 class="mt-5 max-w-3xl font-serif text-[clamp(2rem,1rem+3.6vw,4.8rem)] leading-[1.03]">
+              {s.t}
+            </h3>
+            <p class="mt-5 max-w-md text-lg leading-relaxed text-paper/75">{s.d}</p>
+          </div>
+        </article>
+      ))
+    }
+
+    <!-- Progress (desktop pin only) -->
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden px-[var(--gutter)] pb-6 lg:block">
+      <div class="h-px w-full overflow-hidden bg-paper/15">
+        <span class="block h-full origin-left scale-x-0 bg-clay-soft" data-stack-bar></span>
+      </div>
+    </div>
+  </div>
+</section>
