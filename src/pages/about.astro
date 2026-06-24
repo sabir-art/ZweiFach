@@ -7,7 +7,9 @@ import FounderCard from '@components/sections/FounderCard.astro';
 import SpecList from '@components/ui/SpecList.astro';
 import PartnersStrip from '@components/sections/PartnersStrip.astro';
 import ContactCta from '@components/sections/ContactCta.astro';
+import Figure from '@components/ui/Figure.astro';
 import { founders } from '@data/founders';
+import { assets } from '@data/assets';
 
 const firmFacts = [
   { label: 'Firm', value: 'ZweiFach Immo GmbH' },
@@ -33,6 +35,10 @@ const firmFacts = [
     <div class="grid gap-14 lg:grid-cols-2 lg:gap-20">
       {founders.map((f) => <FounderCard founder={f} detailed />)}
     </div>
+  </Section>
+
+  <Section tone="paper" spacing="tight">
+    <Figure asset={assets.studioWork} aspect="21 / 9" class="rounded-2xl" data-reveal />
   </Section>
 
   <!-- Why two -->

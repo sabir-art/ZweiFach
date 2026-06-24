@@ -1,0 +1,39 @@
+name: Localize assets
+
+# Downloads the generated imagery listed in src/data/assets.ts from the
+# Higgsfield CDN and commits it into the repo under /public/images, so the
+# project carries its own assets (accessible from any machine). Runs on
+# GitHub's runners, which have open network access — unlike the dev sandbox.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download generated assets
+        run: node --experimental-strip-types scripts/fetch-assets.mjs
+
+      - name: Commit assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/images
+          if git diff --staged --quiet; then
+            echo "No new or changed assets."
+          else
+            git commit -m "Localize generated imagery into /public [skip ci]"
+            git push
+          fi

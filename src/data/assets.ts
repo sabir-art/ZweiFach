@@ -86,6 +86,22 @@ export const assets = {
     width: 2400,
     height: 1792,
   },
+  caseUferpark: {
+    id: '4f9dda20-90a0-47c0-a835-2db06fa5a36b',
+    url: `${CDN}/hf_20260624_094520_4f9dda20-90a0-47c0-a835-2db06fa5a36b.png`,
+    local: 'images/projects/uferpark.jpg',
+    alt: 'Premium contemporary lakeside residential building with deep balconies overlooking a Swiss lake.',
+    width: 2528,
+    height: 1696,
+  },
+  studioWork: {
+    id: '80fb943f-1670-4579-9516-31974610eb8f',
+    url: `${CDN}/hf_20260624_094542_80fb943f-1670-4579-9516-31974610eb8f.png`,
+    local: 'images/studio/workspace.jpg',
+    alt: 'Calm, minimal architecture studio workspace with rolled drawings, samples and a scale model.',
+    width: 2528,
+    height: 1696,
+  },
 } satisfies Record<string, GeneratedAsset>;
 
 export type AssetKey = keyof typeof assets;
