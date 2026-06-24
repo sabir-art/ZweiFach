@@ -49,6 +49,7 @@ export const founders: Founder[] = [
       'On-site construction management (Bauleitung) — delivered with trusted execution partners, not in-house.',
     ],
     email: 'esad@zwei-fach.ch',
+    portrait: '/images/team/esad.jpg',
     portraitAlt: 'Portrait of Esad Mujanovic, architect at ZweiFach.',
   },
   {
@@ -69,6 +70,7 @@ export const founders: Founder[] = [
       'Briefing of 3D, brochures & project site (with CloudOnPoint)',
     ],
     email: 'dionis@zwei-fach.ch',
+    portrait: '/images/team/dionis.jpg',
     portraitAlt: 'Portrait of Dionis Fetahaj, commercialization lead at ZweiFach.',
   },
 ];

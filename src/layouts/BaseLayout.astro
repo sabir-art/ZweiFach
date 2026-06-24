@@ -32,6 +32,18 @@ const { headerVariant = 'solid', ...head } = Astro.props;
     <slot name="head" />
   </head>
   <body>
+    <!-- Preloader (CSS-driven; skipped after first view per session) -->
+    <div class="preloader" data-preloader aria-hidden="true">
+      <div class="preloader__inner">
+        <span class="flex items-end gap-[3px]">
+          <span class="block h-6 w-[3px] rounded-sm bg-blueprint"></span>
+          <span class="block h-6 w-[3px] rounded-sm bg-clay"></span>
+        </span>
+        <span class="font-sans text-lg font-bold tracking-tight">ZweiFach</span>
+        <span class="preloader__bar"></span>
+      </div>
+    </div>
+
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
       Skip to content
     </a>
@@ -46,7 +58,9 @@ const { headerVariant = 'solid', ...head } = Astro.props;
     </div>
 
     <!-- Custom cursor (fine pointers only) -->
-    <div class="cursor cursor-ring" data-cursor-ring aria-hidden="true"></div>
+    <div class="cursor cursor-ring" data-cursor-ring aria-hidden="true">
+      <span class="cursor-label" data-cursor-text></span>
+    </div>
     <div class="cursor cursor-dot" data-cursor-dot aria-hidden="true"></div>
 
     <!-- Film grain -->

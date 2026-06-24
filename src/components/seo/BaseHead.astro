@@ -49,8 +49,14 @@ const organizationLd = {
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<!-- Mark JS-enabled before paint so scroll-reveal only hides when it can un-hide. -->
-<script is:inline>document.documentElement.classList.add('js');</script>
+<!-- Mark JS-enabled before paint; skip the preloader after the first view this session. -->
+<script is:inline>
+  document.documentElement.classList.add('js');
+  try {
+    if (sessionStorage.getItem('zf-seen')) document.documentElement.classList.add('pl-skip');
+    else sessionStorage.setItem('zf-seen', '1');
+  } catch (e) {}
+</script>
 <meta name="generator" content={Astro.generator} />
 
 <title>{fullTitle}</title>

@@ -169,6 +169,18 @@ function initCursor() {
     el.addEventListener('pointerenter', () => document.documentElement.classList.add('cursor-hot'));
     el.addEventListener('pointerleave', () => document.documentElement.classList.remove('cursor-hot'));
   });
+
+  // Contextual labels ("View", "Drag", …)
+  const textEl = document.querySelector<HTMLElement>('[data-cursor-text]');
+  document.querySelectorAll<HTMLElement>('[data-cursor-label]').forEach((el) => {
+    el.addEventListener('pointerenter', () => {
+      if (textEl) textEl.textContent = el.dataset.cursorLabel || '';
+      document.documentElement.classList.add('cursor-has-label');
+    });
+    el.addEventListener('pointerleave', () =>
+      document.documentElement.classList.remove('cursor-has-label'),
+    );
+  });
 }
 
 /* ---------- Magnetic elements ---------- */

@@ -1,0 +1,113 @@
+---
+import Figure from '@components/ui/Figure.astro';
+import Button from '@components/ui/Button.astro';
+import { founders } from '@data/founders';
+import { assets } from '@data/assets';
+
+/**
+ * Numbered expertise blocks (Architecture / Commercialization) in the
+ * agency-grade "Vide Infra" register: big title, the named principal, and
+ * hover-scale work cards with a corner action.
+ */
+const esad = founders.find((f) => f.id === 'esad')!;
+const dionis = founders.find((f) => f.id === 'dionis')!;
+
+const blocks = [
+  {
+    n: '01',
+    title: 'Architecture',
+    href: '/architecture/',
+    person: esad,
+    strand: 'blueprint' as const,
+    cards: [
+      { asset: assets.caseHoehenweg, label: 'Feasibility & design', meta: 'Höhenweg' },
+      { asset: assets.archModel, label: 'Plans & massing', meta: 'Studio' },
+    ],
+  },
+  {
+    n: '02',
+    title: 'Commercialization',
+    href: '/commercialization/',
+    person: dionis,
+    strand: 'clay' as const,
+    cards: [
+      { asset: assets.interiorLiving, label: 'Off-plan pre-sale', meta: 'Show-home' },
+      { asset: assets.caseAarefeld, label: 'Sold out', meta: 'Aarefeld' },
+    ],
+  },
+];
+---
+
+<div class="space-y-20 md:space-y-28">
+  {
+    blocks.map((b) => (
+      <article class="grid gap-x-8 gap-y-10 border-t border-ink/15 pt-8 lg:grid-cols-12 lg:pt-10">
+        <div class="lg:col-span-5">
+          <div class="flex items-baseline gap-4" data-reveal>
+            <span class="font-mono text-sm text-taupe">{b.n}</span>
+            <span class:list={['h-px w-10', b.strand === 'blueprint' ? 'bg-blueprint' : 'bg-clay']} />
+          </div>
+          <h3
+            class="mt-5 font-sans text-[clamp(2.4rem,1rem+4.5vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.03em]"
+            data-reveal
+          >
+            {b.title}
+          </h3>
+          <p class="mt-5 max-w-md text-lg leading-relaxed text-ink/70" data-reveal>
+            {b.person.lead}
+          </p>
+
+          <div class="mt-7 flex items-center gap-3" data-reveal>
+            {b.person.portrait && (
+              <img
+                src={b.person.portrait}
+                alt={b.person.portraitAlt}
+                width="48"
+                height="48"
+                loading="lazy"
+                class="h-12 w-12 rounded-full object-cover"
+              />
+            )}
+            <div>
+              <p class="font-sans text-sm font-semibold">{b.person.name}</p>
+              <p class="font-mono text-[0.7rem] text-taupe">{b.person.credential}</p>
+            </div>
+          </div>
+
+          <div class="mt-7" data-reveal>
+            <Button href={b.href} variant="line">Explore {b.title.toLowerCase()}</Button>
+          </div>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+          {b.cards.map((c, i) => (
+            <a
+              href={b.href}
+              class="group relative block"
+              data-reveal
+              style={`--reveal-delay:${i * 90}ms`}
+            >
+              <Figure
+                asset={c.asset}
+                aspect="4 / 3"
+                class="rounded-xl"
+                imgClass="transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+              >
+                <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-graphite/45 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <span class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-paper/90 text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-90">
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" fill="none">
+                    <path d="M6 0v12M0 6h12" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </span>
+              </Figure>
+              <div class="mt-3 flex items-baseline justify-between">
+                <p class="font-sans text-sm font-medium">{c.label}</p>
+                <p class="font-mono text-[0.65rem] uppercase tracking-wider text-taupe">{c.meta}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </article>
+    ))
+  }
+</div>

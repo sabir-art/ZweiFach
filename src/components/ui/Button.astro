@@ -2,6 +2,7 @@
 /**
  * Button / CTA. Renders an <a> when `href` is set, otherwise a <button>.
  * variants: primary (ink), inverse (paper, for dark sections), line (text + arrow).
+ * Premium hover: a colour fill wipes up behind the label.
  */
 interface Props {
   href?: string;
@@ -22,30 +23,49 @@ const {
 } = Astro.props;
 
 const base =
-  'group/btn inline-flex items-center gap-2 font-sans text-[0.92rem] font-medium transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2';
+  'group/btn relative inline-flex items-center gap-2 overflow-hidden font-sans text-[0.92rem] font-medium transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2';
 
-const variants: Record<string, string> = {
-  primary:
-    'rounded-full bg-ink px-5 py-2.5 text-paper hover:bg-graphite hover:shadow-[0_8px_30px_-12px_rgba(22,24,26,0.5)]',
-  inverse: 'rounded-full bg-paper px-5 py-2.5 text-ink hover:bg-white',
-  line: 'pb-1 text-ink hover:text-clay',
+// Solid variants get a fill that rises on hover. `fill` is the rising colour.
+const variants: Record<string, { box: string; fill: string }> = {
+  primary: {
+    box: 'rounded-full bg-ink px-5 py-2.5 text-paper hover:text-paper',
+    fill: 'bg-clay',
+  },
+  inverse: {
+    box: 'rounded-full bg-paper px-5 py-2.5 text-ink hover:text-paper',
+    fill: 'bg-ink',
+  },
+  line: { box: 'pb-1 text-ink hover:text-clay', fill: '' },
 };
 
+const v = variants[variant];
 const Tag = href ? 'a' : 'button';
 ---
 
 <Tag
   href={href}
   type={href ? undefined : type}
-  class:list={[base, variants[variant], className]}
+  class:list={[base, v.box, className]}
+  data-cursor
   {...rest}
 >
-  <span class={variant === 'line' ? 'link-underline' : ''}><slot /></span>
+  {
+    v.fill && (
+      <span
+        aria-hidden="true"
+        class:list={[
+          'pointer-events-none absolute inset-0 translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:translate-y-0',
+          v.fill,
+        ]}
+      />
+    )
+  }
+  <span class:list={['relative z-10', variant === 'line' ? 'link-underline' : '']}><slot /></span>
   {
     arrow && (
       <span
         aria-hidden="true"
-        class="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:translate-x-1"
+        class="relative z-10 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:translate-x-1"
       >
         →
       </span>

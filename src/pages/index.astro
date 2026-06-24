@@ -5,7 +5,7 @@ import Marquee from '@components/sections/Marquee.astro';
 import Section from '@components/ui/Section.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
 import ValueChain from '@components/sections/ValueChain.astro';
-import FounderCard from '@components/sections/FounderCard.astro';
+import Expertise from '@components/sections/Expertise.astro';
 import StatBand from '@components/sections/StatBand.astro';
 import ProjectsRail from '@components/sections/ProjectsRail.astro';
 import PartnersStrip from '@components/sections/PartnersStrip.astro';
@@ -13,10 +13,7 @@ import ContactCta from '@components/sections/ContactCta.astro';
 import Button from '@components/ui/Button.astro';
 import Figure from '@components/ui/Figure.astro';
 
-import { founders } from '@data/founders';
 import { assets } from '@data/assets';
-
-const expertiseHref = { architecture: '/architecture/', commercialization: '/commercialization/' };
 ---
 
 <BaseLayout headerVariant="over-hero">
@@ -133,19 +130,8 @@ const expertiseHref = { architecture: '/architecture/', commercialization: '/com
       ZweiFach is deliberately two people — an architect and a commercialization
       lead — so design and sales are never handed off across a gap.
     </p>
-    <div class="mt-14 grid gap-12 md:grid-cols-2 md:gap-16">
-      {
-        founders.map((f) => (
-          <div>
-            <FounderCard founder={f} />
-            <div class="mt-5">
-              <Button href={expertiseHref[f.discipline]} variant="line">
-                Explore {f.discipline}
-              </Button>
-            </div>
-          </div>
-        ))
-      }
+    <div class="mt-16">
+      <Expertise />
     </div>
   </Section>
 
