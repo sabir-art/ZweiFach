@@ -174,9 +174,21 @@ function initReveals() {
         }
       });
     },
-    { threshold: 0.1, rootMargin: '0px 0px -10% 0px' },
+    { threshold: 0, rootMargin: '0px 0px -5% 0px' },
   );
   els.forEach((el) => io.observe(el));
+  // Safety net: never leave an on-screen element hidden/translated if the
+  // observer misses it (very tall elements, bottom-of-page reveals, etc.).
+  const sweep = () => {
+    els.forEach((el) => {
+      if (!el.classList.contains('is-in') && el.getBoundingClientRect().top < window.innerHeight * 0.95) {
+        el.classList.add('is-in');
+        io.unobserve(el);
+      }
+    });
+  };
+  window.addEventListener('load', sweep);
+  setTimeout(sweep, 1500);
 }
 
 /* ---------- Word-reveal headlines ---------- */
