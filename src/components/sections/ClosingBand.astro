@@ -1,0 +1,66 @@
+---
+/**
+ * ClosingBand — the night beat that closes the day→dusk→night arc started in
+ * the Location section (Seedance chain clip 2: dusk → night). A full-bleed
+ * clip with one quiet line, leading into the contact CTA. Poster fallback.
+ */
+import { media } from '@data/media';
+---
+
+<section class="relative flex h-[82vh] min-h-[520px] items-center justify-center overflow-hidden bg-ink text-paper">
+  {
+    media.nightVideo ? (
+      <video
+        class="closing-media absolute inset-0 h-full w-full object-cover"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={media.nightPoster}
+      >
+        <source src={media.nightVideo} type="video/mp4" />
+      </video>
+    ) : (
+      <img
+        class="closing-media absolute inset-0 h-full w-full object-cover"
+        src={media.nightPoster}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+      />
+    )
+  }
+  <div class="absolute inset-0 bg-ink/55"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/40"></div>
+
+  <div class="shell relative z-10 text-center">
+    <p class="kicker kicker--bare !text-paper/60" data-reveal>The whole chain</p>
+    <h2
+      class="mx-auto mt-6 max-w-4xl font-serif text-[clamp(2.2rem,1rem+4.4vw,5.5rem)] leading-[1.04]"
+      data-split
+    >
+      From the first study to the final signature.
+    </h2>
+  </div>
+</section>
+
+<style>
+  .closing-media {
+    animation: closing-kenburns 32s ease-in-out infinite alternate;
+    transform-origin: 50% 50%;
+  }
+  @keyframes closing-kenburns {
+    from {
+      transform: scale(1.02);
+    }
+    to {
+      transform: scale(1.12);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .closing-media {
+      animation: none;
+    }
+  }
+</style>

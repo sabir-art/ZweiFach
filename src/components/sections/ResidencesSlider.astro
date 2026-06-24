@@ -1,0 +1,95 @@
+---
+/**
+ * ResidencesSlider — the scroll-driven gallery (Springs "Residences").
+ * On desktop the section pins and the cards travel horizontally as you scroll
+ * vertically, with a progress line (initHorizontal in ui.ts). On phones it
+ * degrades to a native horizontal swipe rail. Replaces the old drag rail.
+ */
+import Figure from '@components/ui/Figure.astro';
+import Button from '@components/ui/Button.astro';
+import { getProjects, resolveAsset, statusLabel, expertiseLabel } from '@lib/projects';
+
+const projects = await getProjects();
+---
+
+<section class="relative bg-graphite text-paper" data-hscroll-wrap>
+  <div class="relative flex h-screen min-h-[640px] flex-col overflow-hidden">
+    <!-- Heading -->
+    <div class="shell pt-24 md:pt-28">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-4">
+            <p class="kicker !text-paper/55" data-reveal>Selected work</p>
+            <span class="corner-label text-paper/40" data-reveal>(04)</span>
+          </div>
+          <h2 class="mt-4 font-serif text-4xl leading-[1.05] md:text-5xl" data-reveal>
+            Proof, not promises.
+          </h2>
+        </div>
+        <p class="hidden corner-label text-paper/40 lg:block" data-reveal>Scroll to pan →</p>
+      </div>
+    </div>
+
+    <!-- Track -->
+    <div class="flex flex-1 items-center">
+      <div
+        class="no-bar flex items-center gap-6 overflow-x-auto px-[var(--gutter)] lg:overflow-visible"
+        data-hscroll
+      >
+        {
+          projects.map((p, i) => {
+            const asset = resolveAsset(p.data.heroAsset);
+            return (
+              <a
+                href={`/projects/${p.id}/`}
+                class="group relative block w-[78vw] shrink-0 sm:w-[46vw] lg:w-[30vw] xl:w-[28rem]"
+                data-cursor
+                data-cursor-label="View"
+              >
+                <Figure
+                  asset={asset}
+                  aspect="3 / 4"
+                  eager={i < 2}
+                  class="rounded-2xl"
+                  imgClass="transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                >
+                  <div class="absolute inset-0 bg-gradient-to-t from-graphite/85 via-graphite/10 to-transparent" />
+                  <span class="corner-label absolute left-5 top-5 rounded-full bg-paper/90 px-3 py-1 text-ink">
+                    {statusLabel[p.data.status]}
+                  </span>
+                  <span class="corner-label absolute right-5 top-5 text-paper/80">0{i + 1}</span>
+                  <div class="absolute inset-x-5 bottom-5">
+                    <p class="corner-label text-paper/70">
+                      {p.data.location} · {expertiseLabel[p.data.expertise]}
+                    </p>
+                    <h3 class="mt-1.5 font-serif text-3xl leading-tight md:text-4xl">
+                      {p.data.title}
+                    </h3>
+                    <span class="mt-3 inline-flex items-center gap-1.5 text-sm opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                      View case study<span aria-hidden="true">→</span>
+                    </span>
+                  </div>
+                </Figure>
+              </a>
+            );
+          })
+        }
+        <!-- End card -->
+        <div class="flex w-[60vw] shrink-0 flex-col justify-center gap-6 px-2 sm:w-[36vw] lg:w-[22vw]">
+          <p class="font-serif text-3xl leading-tight">Every link, on the record.</p>
+          <Button href="/projects/" variant="inverse">All projects</Button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="shell pb-10">
+      <div class="flex items-center justify-between gap-6">
+        <p class="corner-label text-paper/35">Placeholder case studies — to be replaced</p>
+        <div class="h-px w-32 overflow-hidden bg-paper/15 md:w-56">
+          <span class="block h-full origin-left scale-x-0 bg-clay-soft" data-hscroll-bar></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

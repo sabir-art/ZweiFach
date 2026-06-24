@@ -1,0 +1,172 @@
+---
+/**
+ * ScrollGalleryHero — the "Splendor of Renewal" opener, rebuilt as a
+ * scroll-driven gallery (the mechanic that actually reads as premium):
+ *
+ *   • a tall section (180vh) whose media layer is sticky for its whole height;
+ *   • two columns of large shots that slide in OPPOSITE vertical directions,
+ *     tied to scroll progress (initScrollHero in ui.ts, GSAP scrub);
+ *   • a sticky caption that holds the viewport bottom while the columns move,
+ *     with an editorial serif headline that rises word by word.
+ *
+ * No-JS / reduced-motion: columns sit composed (CSS default) and the headline
+ * is fully visible. Images come from media.ts (generated stills, local
+ * fallback).
+ */
+import { site } from '@data/site';
+import { heroShots } from '@data/media';
+import Button from '@components/ui/Button.astro';
+
+const left = [0, 2, 4, 1, 3].map((i) => heroShots[i % heroShots.length]);
+const right = [5, 1, 3, 0, 2].map((i) => heroShots[i % heroShots.length]);
+---
+
+<section class="scroll-hero bg-ink text-paper" data-hero>
+  <!-- Media: two opposite-moving columns -->
+  <div class="scroll-hero__media">
+    <div class="scroll-hero__rail" data-hero-rail="left">
+      {
+        left.map((src) => (
+          <figure class="scroll-hero__shot">
+            <img src={src} alt="" aria-hidden="true" loading="eager" decoding="async" />
+          </figure>
+        ))
+      }
+    </div>
+    <div class="scroll-hero__rail" data-hero-rail="right">
+      {
+        right.map((src) => (
+          <figure class="scroll-hero__shot">
+            <img src={src} alt="" aria-hidden="true" loading="eager" decoding="async" />
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Wash -->
+  <div class="scroll-hero__overlay" aria-hidden="true"></div>
+
+  <!-- Caption -->
+  <div class="scroll-hero__caption">
+    <div class="shell flex h-full flex-col justify-between pb-12 pt-28 md:pb-16 md:pt-32">
+      <div class="flex items-center justify-between">
+        <p class="corner-label text-paper/60">{site.location.city} · {site.location.canton}</p>
+        <p class="corner-label hidden text-paper/55 sm:block">Est. 2025 — CH</p>
+      </div>
+
+      <div>
+        <p class="kicker !text-paper/75" data-reveal>Architecture × Commercialization</p>
+        <h1
+          class="scroll-hero__title mt-5 max-w-[15ch] font-serif text-[clamp(3rem,1rem+9vw,10rem)] leading-[0.92]"
+          data-split
+          data-split-now
+        >
+          From land to the last apartment sold.
+        </h1>
+
+        <div class="mt-8 flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
+          <p
+            class="max-w-md text-lg leading-relaxed text-paper/80"
+            data-reveal
+            style="--reveal-delay:350ms"
+          >
+            {site.shortPitch}
+          </p>
+          <div
+            class="pointer-events-auto flex flex-wrap items-center gap-x-6 gap-y-4"
+            data-reveal
+            style="--reveal-delay:450ms"
+          >
+            <span class="inline-block" data-magnetic>
+              <Button href="/contact/" variant="inverse">Talk about your project</Button>
+            </span>
+            <Button href="/method/" variant="line" class="!text-paper">See the method</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .scroll-hero {
+    position: relative;
+    min-height: 180vh;
+    overflow: clip;
+  }
+  .scroll-hero__media {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 1.3vw, 22px);
+    padding: clamp(12px, 1.3vw, 22px);
+  }
+  .scroll-hero__rail {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.3vw, 22px);
+    /* Composed default for no-JS; GSAP drives it when active. */
+    transform: translateY(-30%);
+    will-change: transform;
+  }
+  .scroll-hero__shot {
+    flex: none;
+    height: 58vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--color-graphite);
+  }
+  .scroll-hero__shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.94) contrast(1.02) brightness(0.94);
+  }
+
+  .scroll-hero__overlay {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    margin-top: -100vh;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        to top,
+        var(--color-ink) 4%,
+        color-mix(in srgb, var(--color-ink) 35%, transparent) 46%,
+        color-mix(in srgb, var(--color-ink) 18%, transparent) 100%
+      ),
+      linear-gradient(120deg, color-mix(in srgb, var(--color-blueprint) 55%, transparent), transparent 60%);
+    mix-blend-mode: normal;
+  }
+
+  .scroll-hero__caption {
+    position: sticky;
+    bottom: 0;
+    height: 100vh;
+    margin-top: -100vh;
+    pointer-events: none;
+  }
+  .scroll-hero__caption .shell {
+    height: 100vh;
+  }
+  .scroll-hero__caption .pointer-events-auto {
+    pointer-events: auto;
+  }
+
+  @media (max-width: 768px) {
+    .scroll-hero__media {
+      grid-template-columns: 1fr;
+    }
+    /* On phones a single column reads cleaner; hide the second rail. */
+    .scroll-hero__rail[data-hero-rail='right'] {
+      display: none;
+    }
+    .scroll-hero__shot {
+      height: 64vh;
+    }
+  }
+</style>

@@ -277,6 +277,66 @@ function initThroughline() {
   });
 }
 
+/* ---------- Scroll-driven hero gallery (opposite-moving columns) ---------- */
+function initScrollHero() {
+  if (reduce) return;
+  document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
+    if (hero.dataset.heroDone) return;
+    hero.dataset.heroDone = '1';
+    const left = hero.querySelector<HTMLElement>('[data-hero-rail="left"]');
+    const right = hero.querySelector<HTMLElement>('[data-hero-rail="right"]');
+    if (left)
+      gsap.fromTo(
+        left,
+        { yPercent: -50 },
+        {
+          yPercent: -10,
+          ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom bottom', scrub: true },
+        },
+      );
+    if (right)
+      gsap.fromTo(
+        right,
+        { yPercent: -10 },
+        {
+          yPercent: -50,
+          ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom bottom', scrub: true },
+        },
+      );
+  });
+}
+
+/* ---------- Horizontal scroll-driven slider (pin + translate + progress) ---------- */
+function initHorizontal() {
+  if (reduce || window.innerWidth < 1024) return;
+  document.querySelectorAll<HTMLElement>('[data-hscroll-wrap]').forEach((wrap) => {
+    if (wrap.dataset.hscrollDone) return;
+    wrap.dataset.hscrollDone = '1';
+    const track = wrap.querySelector<HTMLElement>('[data-hscroll]');
+    const bar = wrap.querySelector<HTMLElement>('[data-hscroll-bar]');
+    if (!track) return;
+    const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+    gsap.to(track, {
+      x: () => -distance(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: wrap,
+        start: 'top top',
+        end: () => '+=' + distance(),
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          if (bar) bar.style.transform = `scaleX(${self.progress})`;
+        },
+      },
+    });
+  });
+}
+
 /* ---------- Scroll zoom-out (image starts zoomed, settles to 1) ---------- */
 function initZoom() {
   if (reduce) return;
@@ -428,8 +488,10 @@ function initOnce() {
 function initPage() {
   safe('reveals', initReveals);
   safe('split', initSplit);
+  safe('scrollHero', initScrollHero);
   safe('parallax', initParallax);
   safe('throughline', initThroughline);
+  safe('horizontal', initHorizontal);
   safe('zoom', initZoom);
   safe('switcher', initSwitcher);
   safe('magnetic', initMagnetic);
