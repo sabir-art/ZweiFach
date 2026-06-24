@@ -14,8 +14,8 @@ const dionis = getFounder('dionis');
 const webp = (p: string) => p.replace(/\.jpe?g$/i, '.webp');
 
 const cols = [
-  { f: esad, photo: '0.05', tone: 'text-blueprint' },
-  { f: dionis, photo: '-0.04', tone: 'text-clay' },
+  { f: esad, photo: '0.16', tone: 'text-blueprint' },
+  { f: dionis, photo: '-0.13', tone: 'text-clay' },
 ];
 
 const cards = [
@@ -28,7 +28,7 @@ const cards = [
     body: 'Feasibility, plans and permit-ready design — value engineered from the first line.',
     label: 'Architecture',
     pos: 'left-0 bottom-0',
-    parallax: '0.08',
+    parallax: '0.2',
     cursor: 'Architecture',
   },
   {
@@ -40,7 +40,7 @@ const cards = [
     body: 'Pricing, dossier and off-plan pre-sale that clears the bank’s quota — through to the last lot.',
     label: 'Commercialization',
     pos: 'right-0 bottom-[26%]',
-    parallax: '-0.07',
+    parallax: '-0.16',
     cursor: 'Commercialization',
   },
 ];
@@ -58,7 +58,7 @@ const cards = [
     {
       cols.map((c) => (
         <div class="relative h-full overflow-hidden">
-          <div class="founders-hero__media absolute -inset-[4%]" data-parallax={c.photo}>
+          <div class="founders-hero__media absolute -inset-[12%]" data-parallax={c.photo}>
             <picture class="block h-full w-full">
               <source srcset={webp(c.f.portrait!)} type="image/webp" />
               <img

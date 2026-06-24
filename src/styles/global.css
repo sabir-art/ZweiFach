@@ -260,13 +260,18 @@
    ============================================================ */
 [data-reveal].reveal-ready {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(46px);
   transition:
-    opacity 1s var(--ease-out-expo),
-    transform 1s var(--ease-out-expo);
+    opacity 1.1s var(--ease-out-expo),
+    transform 1.1s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
+/* Directional variants — IntersectionObserver-driven, so they slide in even if
+   ScrollTrigger/Lenis hiccup. */
+[data-reveal][data-reveal-dir="right"].reveal-ready { transform: translateX(72px); }
+[data-reveal][data-reveal-dir="left"].reveal-ready { transform: translateX(-72px); }
+[data-reveal][data-reveal-dir="none"].reveal-ready { transform: none; }
 [data-reveal].reveal-ready.is-in {
   opacity: 1;
   transform: none;
@@ -283,7 +288,7 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  [data-reveal].reveal-ready { opacity: 1; transform: none; }
+  [data-reveal].reveal-ready { opacity: 1 !important; transform: none !important; }
 }
 
 /* ============================================================

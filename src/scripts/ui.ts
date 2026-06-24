@@ -49,8 +49,12 @@ function safe(label: string, fn: () => void) {
 function initSmoothScroll() {
   if (reduce || lenis) return;
   lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis!.raf(time * 1000));
+  // Drive Lenis from GSAP's ticker and update ScrollTrigger AFTER the frame,
+  // so scroll-driven triggers never read a stale scroll position.
+  gsap.ticker.add((time) => {
+    lenis!.raf(time * 1000);
+    ScrollTrigger.update();
+  });
   gsap.ticker.lagSmoothing(0);
 }
 
@@ -524,6 +528,12 @@ function initOnce() {
   safe('headerListeners', initHeaderListeners);
   safe('anchors', initAnchors);
   safe('menuEscape', initMenuEscape);
+  // Trigger positions depend on final layout — recompute once fonts settle.
+  safe('fontsRefresh', () => {
+    if ((document as any).fonts?.ready) {
+      (document as any).fonts.ready.then(() => ScrollTrigger.refresh());
+    }
+  });
 }
 
 function initPage() {
